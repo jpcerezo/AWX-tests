@@ -1,0 +1,9 @@
+plugin: netbox.netbox.nb_inventory
+validate_certs: False
+config_context: True
+ 
+group_by:
+  - device_roles
+ 
+device_query_filters:
+  - has_primary_ip: 'true'
