@@ -1,9 +1,12 @@
+---
 plugin: netbox.netbox.nb_inventory
-validate_certs: False
-config_context: True
- 
+api_endpoint: http://192.168.1.102:8000
+validate_certs: false
+config_context: false
 group_by:
   - device_roles
- 
+query_filters:
+  - role: juniper-router
 device_query_filters:
   - has_primary_ip: 'true'
+  - tenant__n: FFN
