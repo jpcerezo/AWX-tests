@@ -1,0 +1,19 @@
+---
+- name: Enable netconf over ssh
+  hosts: all
+  gather_facts: no
+  vars:
+    ansible_network_os: junipernetworks.junos.junos
+
+  tasks:
+      
+    - name: Enable NETCONF
+      connection: ansible.netcommon.network_cli
+      junipernetworks.junos.junos_netconf:
+      when: ansible_network_os == 'junipernetworks.junos.junos'
+      register: response
+
+    - name: "Print result"
+      debug:
+        var: response
+
