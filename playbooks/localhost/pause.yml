@@ -1,0 +1,9 @@
+---
+- name: pause
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Pause until you can verify updates to an application were successful
+      ansible.builtin.pause:
+        minutes: "{{ var_minutes }}"
+
