@@ -9,4 +9,3 @@ query_filters:
   - role: juniper-router
 device_query_filters:
   - has_primary_ip: 'true'
-#  - tenant__n: 'FFN'
