@@ -1,0 +1,22 @@
+---
+- name: Test juniper.device.command module
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: TEST 1 - Execute single "show version" command.
+      juniper.device.command:
+        commands: "show version"
+      register: test1
+
+    - name: Check TEST 1
+      ansible.builtin.assert:
+        that:
+          test1.msg == "The command executed successfully."
+
+    - name: Creates directory
+      ansible.builtin.file:
+        path: out
+        state: directory
+        mode: '0644'
+
