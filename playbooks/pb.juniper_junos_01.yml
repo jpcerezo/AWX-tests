@@ -1,13 +1,15 @@
 ---
-- name: Test juniper.device.command module
+- name: Gather user information
   hosts: all
-  gather_facts: false
-
+  connection: local
+  gather_facts: no
   tasks:
-    - name: TEST 1 - Execute single "show version" command.
-      juniper.device.command:
-        commands: "show version"
-      register: test1
+    - name: TEST1 - Gather user information
+      junos_command:
+        commands:
+          - show system users
+        provider: "{{ credential }}"
+      register: result
 
     - name: Check TEST 1
       ansible.builtin.assert:
@@ -19,4 +21,6 @@
         path: out
         state: directory
         mode: '0644'
+
+  - debug: var=result.stdout
 
