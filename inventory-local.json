@@ -1,0 +1,246 @@
+{
+    "_meta": {
+        "hostvars": {
+            "ictn01-fra": {
+                "ansible_host": "192.168.1.190",
+                "custom_fields": {},
+                "device_roles": [
+                    "juniper-router"
+                ],
+                "device_types": [
+                    "vsrx"
+                ],
+                "is_virtual": false,
+                "local_context_data": [
+                    null
+                ],
+                "locations": [
+                    "batstore"
+                ],
+                "manufacturers": [
+                    "juniper"
+                ],
+                "primary_ip4": "192.168.1.190",
+                "racks": [
+                    "RACK 01"
+                ],
+                "regions": [
+                    "madrid",
+                    "espana"
+                ],
+                "serial": "",
+                "services": [],
+                "site_groups": [
+                    "inetlabs-g"
+                ],
+                "sites": [
+                    "pradonorte"
+                ],
+                "status": {
+                    "label": "Active",
+                    "value": "active"
+                },
+                "tags": [],
+                "tenants": [
+                    "inetlabs"
+                ]
+            },
+            "ictn01-tip": {
+                "ansible_host": "192.168.1.192",
+                "custom_fields": {},
+                "device_roles": [
+                    "juniper-router"
+                ],
+                "device_types": [
+                    "vsrx"
+                ],
+                "is_virtual": false,
+                "local_context_data": [
+                    null
+                ],
+                "locations": [
+                    "batstore"
+                ],
+                "manufacturers": [
+                    "juniper"
+                ],
+                "primary_ip4": "192.168.1.192",
+                "racks": [
+                    "RACK 01"
+                ],
+                "regions": [
+                    "madrid",
+                    "espana"
+                ],
+                "serial": "",
+                "services": [],
+                "site_groups": [
+                    "inetlabs-g"
+                ],
+                "sites": [
+                    "pradonorte"
+                ],
+                "status": {
+                    "label": "Active",
+                    "value": "active"
+                },
+                "tags": [],
+                "tenants": [
+                    "inetlabs"
+                ]
+            },
+            "ictn02-fra": {
+                "ansible_host": "192.168.1.191",
+                "custom_fields": {},
+                "device_roles": [
+                    "juniper-router"
+                ],
+                "device_types": [
+                    "vsrx"
+                ],
+                "is_virtual": false,
+                "local_context_data": [
+                    null
+                ],
+                "locations": [
+                    "batstore"
+                ],
+                "manufacturers": [
+                    "juniper"
+                ],
+                "primary_ip4": "192.168.1.191",
+                "racks": [
+                    "RACK 01"
+                ],
+                "regions": [
+                    "madrid",
+                    "espana"
+                ],
+                "serial": "",
+                "services": [],
+                "site_groups": [
+                    "inetlabs-g"
+                ],
+                "sites": [
+                    "pradonorte"
+                ],
+                "status": {
+                    "label": "Active",
+                    "value": "active"
+                },
+                "tags": [],
+                "tenants": [
+                    "inetlabs"
+                ]
+            },
+            "ictn02-tip": {
+                "ansible_host": "192.168.1.193",
+                "custom_fields": {},
+                "device_roles": [
+                    "juniper-router"
+                ],
+                "device_types": [
+                    "vsrx"
+                ],
+                "is_virtual": false,
+                "local_context_data": [
+                    null
+                ],
+                "locations": [
+                    "batstore"
+                ],
+                "manufacturers": [
+                    "juniper"
+                ],
+                "primary_ip4": "192.168.1.193",
+                "racks": [
+                    "RACK 01"
+                ],
+                "regions": [
+                    "madrid",
+                    "espana"
+                ],
+                "serial": "",
+                "services": [],
+                "site_groups": [
+                    "inetlabs-g"
+                ],
+                "sites": [
+                    "pradonorte"
+                ],
+                "status": {
+                    "label": "Active",
+                    "value": "active"
+                },
+                "tags": [],
+                "tenants": [
+                    "inetlabs"
+                ]
+            },
+            "srx3": {
+                "ansible_host": "192.168.1.175",
+                "custom_fields": {},
+                "device_roles": [
+                    "juniper-router"
+                ],
+                "device_types": [
+                    "srx300"
+                ],
+                "is_virtual": false,
+                "local_context_data": [
+                    null
+                ],
+                "locations": [
+                    "batstore"
+                ],
+                "manufacturers": [
+                    "juniper"
+                ],
+                "primary_ip4": "192.168.1.175",
+                "racks": [
+                    "RACK 01"
+                ],
+                "regions": [
+                    "madrid",
+                    "espana"
+                ],
+                "serial": "",
+                "services": [],
+                "site_groups": [
+                    "inetlabs-g"
+                ],
+                "sites": [
+                    "pradonorte"
+                ],
+                "status": {
+                    "label": "Active",
+                    "value": "active"
+                },
+                "tags": [],
+                "tenants": [
+                    "inetlabs"
+                ]
+            }
+        }
+    },
+    "all": {
+        "children": [
+            "ungrouped",
+            "device_types_vsrx",
+            "device_types_srx300"
+        ]
+    },
+    "device_types_srx300": {
+        "hosts": [
+            "srx3"
+        ]
+    },
+    "device_types_vsrx": {
+        "hosts": [
+            "ictn01-fra",
+            "ictn01-tip",
+            "ictn02-fra",
+            "ictn02-tip"
+        ]
+    }
+}

@@ -1,0 +1,47 @@
+---
+- name: vSRX Playbook
+  hosts:  all
+  gather_facts: no
+
+  collections:
+    - junipernetworks.junos
+
+  vars:
+    ansible_network_os: junipernetworks.junos.junos
+
+  tasks:
+    - name: Time Zone
+      connection: ansible.netcommon.netconf
+      junipernetworks.junos.junos_config:
+        lines:
+        - set system time-zone Europe/Madrid
+      tags: ntp
+
+    - name: Static Routes
+      connection: ansible.netcommon.netconf
+      junipernetworks.junos.junos_static_routes:
+        config:
+        - address_families:
+          - afi: ipv4
+            routes:
+            - dest: 0.0.0.0/0
+              next_hop:
+              - forward_router_address: 192.168.1.1 
+      tags:  route
+
+    - name: Retrieve Junos OS version
+      connection: ansible.netcommon.network_cli
+      junipernetworks.junos.junos_command:
+        commands: show version
+      register: show_version
+
+    - name: Retrieve Junos OS version
+      connection: ansible.netcommon.network_cli
+      junipernetworks.junos.junos_command:
+         commands: show version
+      when: ansible_network_os == 'junipernetworks.junos.junos'
+
+#    - name: Collect default set of facts and configuration
+#      junipernetworks.junos.junos_facts:
+#        gather_subset: config
+#

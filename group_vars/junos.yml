@@ -1,0 +1,6 @@
+[junos:vars]
+ansible_connection=ansible.netcommon.network_cli
+ansible_network_os=junipernetworks.junos.junos
+ansible_user=myuser
+ansible_password=!vault...
+ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q bastion01"'
