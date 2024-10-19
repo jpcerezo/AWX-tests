@@ -22,5 +22,5 @@
         state: directory
         mode: '0644'
 
-  - debug: var=result.stdout
+    - debug: var=result.stdout
 
