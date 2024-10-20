@@ -1,0 +1,26 @@
+---
+- name: Junos Gather facts 
+  hosts:  all
+  gather_facts: no
+
+  collections:
+    - junipernetworks.junos
+
+  vars:
+    ansible_network_os: junipernetworks.junos.junos
+
+  tasks:
+    - name: Time Zone
+      connection: ansible.netcommon.netconf
+      junipernetworks.junos.junos_config:
+        lines:
+        - set system time-zone Europe/Madrid
+      tags: ntp
+
+    - name: gather juniper junos facts
+      vars:
+        ansible_connection: netconf
+      junipernetworks.junos.facts:
+        gather_network_resources: "{{ network_resource | default('!vlans,!bgp_global,!bgp_address_family,!ospf_interfaces') }}"
+      tags: resources
+  
