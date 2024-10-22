@@ -6,9 +6,9 @@
   collections:
     - junipernetworks.junos
 
-  vars_prompt:
-    - name: var_command
-      prompt: "Enter a command:"
+#  vars_prompt:
+#    - name: var_command
+#      prompt: "Enter a command:"
 
   vars:
     - interpreter_python: /usr/bin/python3.12
