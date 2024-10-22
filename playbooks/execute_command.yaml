@@ -1,6 +1,6 @@
 ---
 - name: Gathering System Information
-  hosts: vSRX
+  hosts: all
   gather_facts: no
   connection: local
   collections:
