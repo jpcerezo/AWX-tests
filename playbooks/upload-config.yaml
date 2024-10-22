@@ -1,0 +1,56 @@
+---
+- name: upload config from file
+  hosts: all
+  collections:
+    - juniper.device
+  connection: local
+  gather_facts: no
+
+  vars:
+    tmp_dir: tmp
+    conf_file: "{{ tmp_dir }}/{{ inventory_hostname }}.conf"
+    j2_file: "{{ var_j2_config_file }}"
+
+  tasks:
+    - name: create tmp dir
+      file:
+        path: "{{ tmp_dir }}"
+        state: directory
+      run_once: yes
+
+    - name: create configs
+      template:
+        src: "{{ j2_file }}"
+        dest: "{{ conf_file }}"
+
+
+    - name: upload config
+      config:
+        port: 22
+        timeout: 60
+        load: "{{ var_load }}"
+        src: "{{ conf_file }}"
+        format: text
+        commit: "{{ var_commit }}"
+        check: true
+        confirmed: "{{ var_confirmed_min if var_commit|bool and var_confirmed|bool else omit }}"
+        comment: "{{ var_comment if var_commit|bool else omit  }}"
+        diff: true
+        return_output: true
+      register: config
+
+    - name: "Print diff if there are changes"
+      debug:
+        var: config.diff_lines
+      when: config.diff_lines is defined and config.diff_lines | length > 0
+
+    - name: delete conf files
+      file:
+        path: "{{ conf_file }}"
+        state: absent
+
+    - name: delete tmp dir
+      file:
+        path: "{{ tmp_dir }}"
+        state: absent
+      run_once: yes

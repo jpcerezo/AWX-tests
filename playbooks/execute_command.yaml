@@ -1,0 +1,29 @@
+---
+- name: Gathering System Information
+  hosts: vSRX
+  gather_facts: no
+  connection: local
+  collections:
+    - junipernetworks.junos
+
+  vars_prompt:
+    - name: var_command
+      prompt: "Enter a command:"
+
+  vars:
+    - interpreter_python: /usr/bin/python3.12
+    - port: 22
+    - ansible_network_os: junipernetworks.junos.junos
+
+  tasks:
+    - name: Execute commands
+      juniper.device.command:
+        commands:
+          - "{{ var_command }}"
+        timeout: 60
+      register: response
+
+    - name: Print the command output
+      debug:
+        #msg: "You entered: {{ var_command }}"
+        var: response.stdout_lines
