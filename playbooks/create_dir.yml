@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  tasks:
+   - name: Create Directory
+     file:
+       path: {{ var_newdir }}
+       mode: "0755"
+       state: directory
+
