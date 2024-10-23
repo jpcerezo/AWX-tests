@@ -1,0 +1,33 @@
+---
+- name: Print all files in the /data/custom-awx-pv directory
+  hosts: localhost
+  gather_facts: no
+  vars:
+    path: "{{ var_path }}"
+
+  tasks:
+    - name: "Check if the {{ path }} directory exists"
+      stat:
+        path: "{{ path }}"
+      register: directory_info
+
+    - name: "Find all files in {{ path }}"
+      find:
+        paths: "{{ path }}"
+        recurse: no
+        file_type: file
+      when: directory_info.stat.exists
+      register: found_files
+
+    - name: Print the name and size of each file
+      debug:
+        msg: "File: {{ item.path }} - Size: {{ item.size }} bytes"
+      loop: "{{ found_files.files }}"
+      when: directory_info.stat.exists
+      loop_control:
+        label: "{{ item['path'] }}"
+
+    - name: Fail if the directory does not exist
+      fail:
+        msg: "Directory {{ path }} does not exist."
+      when: not directory_info.stat.exists          

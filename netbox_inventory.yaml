@@ -8,9 +8,10 @@ config_context: false
 group_by:
   - device_types
 query_filters:
-  - role: juniper-router
+  - manufacturer: juniper
+#  - role: juniper-router
 #device_query_filters:
-#  - has_primary_ip: 'true'
+  - has_primary_ip: 'true'
 #  - tenant__n: FFN
 
 # has_primary_ip is a useful way to filter out patch panels and other passive devices

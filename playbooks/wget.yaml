@@ -1,0 +1,27 @@
+---
+- name: Download file from var_url and save to var_dir
+  hosts: localhost
+  gather_facts: no
+  become: true
+  vars:
+    url: "{{ var_url }}"
+    dir: "{{ var_dir }}"
+  tasks:
+    - name: "get the stats of the {{ var_dir }} directory"
+      stat:
+        path: "{{ var_dir }}"
+      register: out
+
+    - name: "print stats of the {{ var_dir }}"
+      debug:
+        msg: "{{ out }}"
+
+    - name: "Download file from {{ url }} and save to {{ dir }}"
+      get_url:
+        url: "{{ url }}"
+        dest: "{{ dir }}"
+      register: return_value
+
+    - name: Print result
+      debug:
+        var: return_value
