@@ -1,0 +1,6 @@
+# roles/ACTUAL_STATE/vars/main.yml
+---
+backup_root: ./backups
+netbox_url: "{{ lookup('ansible.builtin.env', 'NETBOX_API') }}"
+netbox_token: "{{ lookup('ansible.builtin.env', 'NETBOX_TOKEN') }}"
+intended_configs_root: ./intended_configs

@@ -1,0 +1,11 @@
+---
+- name: creates multiple directories in one task
+  hosts: localhost
+  gather_facts: no
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - ./aaa
+    - ./bbb
+    - ./

@@ -1,0 +1,12 @@
+---
+- name: CALL NETBOX AND GET DEVICES 
+  hosts: device_roles_juniper-router
+  gather_facts: false
+  connection: network_cli
+  collections:
+    - junipernetworks.junos
+  vars:
+    ansible_network_os: junipernetworks.junos.junos
+
+  roles:
+    - role: ACTUAL_STATE

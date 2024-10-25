@@ -1,0 +1,65 @@
+{% set vars = {'vrrp': False} %}
+
+{% macro printIps(iface, ips) %}
+{% set fhrps = iface.fhrp_group_assignments.all() %}
+family inet {
+    {% for ip in ips %}
+    {% for fhrp in fhrps %}
+        {% set vips = fhrp.group.ip_addresses.all() %}
+        {% if vars.update({'vrrp': fhrp if vips and vips[0].network == ip.network else False}) %} {% endif %}
+    {% endfor %}
+    {% if vars.vrrp %}
+    {% set vrrp = vars.vrrp %}
+    address {{ ip }} {
+        vrrp-group {{ vrrp.group.id }} {
+            virtual-address {{ vrrp.group.ip_addresses.get().address.ip }};
+            priority {{ vrrp.priority }};
+        }
+    }
+    {% if vars.update({'vrrp': False}) %} {% endif %}
+    {% else %}
+    address {{ ip }};
+    {% endif %}
+    {% endfor %}
+}
+{% endmacro %}
+
+interfaces {
+    {% for iface in device.interfaces.all() %}
+    {{ iface.name }} {
+        description "{{ iface.label }}";
+        {% if iface.enabled %}
+        {% if iface.lag %}
+        ether-options {
+            802.3ad {{ iface.lag.name }};
+        }
+        {% else %}
+        {% set ipv4 = iface.ip_addresses.filter(address__net_contained="0/0") %}
+        {% set ipv6 = iface.ip_addresses.filter(address__net_contained="::/0") %}
+        unit 0 {
+        {% if ipv4 or ipv6 %}
+            {% if ipv4 %}
+            {{ printIps(iface, ipv4)|indent(12, False) }}
+            {% endif %}
+            {% if ipv6 %}
+            {{ printIps(iface, ipv6)|indent(12, False) }}
+            {% endif %}
+        {% elif iface.untagged_vlan or iface.tagged_vlans.count() %}
+            family ethernet_switching {
+                {% if iface.untagged_vlan %}
+                interface-mode access;
+                members {{ iface.untagged_vlan.name }};
+                {% else %}
+                interface-mode trunk;
+                members [ {{ iface.tagged_vlans.all() | map(attribute='name') | join(' ') }} ];
+                {% endif %}
+            }
+        {% endif %}
+        }
+        {% endif %}
+        {% else %}
+        disable;
+        {% endif %}
+    }
+    {% endfor %}
+}

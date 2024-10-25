@@ -1,13 +1,19 @@
 ---
 - name: Create Directory
   hosts: localhost
-  vars:
-    new_path: "{{ var_newdir }}"
+  gather_facts: no
+
+#  vars:
+#    new_path: "{{ var_newdir }}"
 
   tasks:
    - name: Create Directory
-     file:
-       path: "{{ new_path }}"
+     ansible.builtin.file:
+#       path: "{{ new_path }}"
+       path: "{{ item }}"
        mode: "0755"
        state: directory
-
+     :loop:
+       - { ./aaa }
+       - { ./bbb }
+       - { ./ccc }
