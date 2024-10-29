@@ -1,0 +1,16 @@
+---
+- name: Download file from var_url and save to var_dir
+  hosts: localhost
+  gather_facts: no
+  become: true
+  tasks:
+   - name: "Download the Image"
+     ansible.builtin.get_url:
+       url: "{{ var_url }}"
+       dest: "{{ var_dir }}"
+       mode: '0755'
+     register: image_download_stats
+
+   - name: "Print the downloaded image name"
+     debug:
+       msg: "{{ image_download_stats.dest|basename }}"

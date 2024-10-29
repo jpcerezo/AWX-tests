@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  tasks:
+  - name: "Download the image"
+    shell: wget --show-progress=off   --content-disposition -N "{{ var_url }}" --force-directories -P "{{ var_dir }}" 
+    register: image_download
+
+  - name: "Print the name of the image"
+    debug:
+      msg: "{% if image_download.stdout_lines |length > 0  %}{{ image_download.stdout_lines |regex_search('(?<=‘)(.*?)(?=’)')}}{%else%}{{image_download.stderr_lines |regex_search('(?<=‘)(.*?)(?=’)')}}{%endif%}"
