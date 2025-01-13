@@ -3,8 +3,8 @@
 ---
 plugin: netbox.netbox.nb_inventory
 api_endpoint: http://192.168.1.102:8000
-validate_certs: true
-config_context: false
+validate_certs: false  
+config_context: true
 group_by:
   - device_types
 query_filters:
