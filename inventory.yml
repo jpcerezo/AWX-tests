@@ -3,11 +3,18 @@
 ---
 plugin: netbox.netbox.nb_inventory
 api_endpoint: http://192.168.1.102:8000
+<<<<<<< HEAD
 validate_certs: true
 config_context: false
 
 group_by: 
   - manufacturers
+=======
+validate_certs: false  
+config_context: true
+group_by:
+  - device_types
+>>>>>>> 14c35f8ad581cafe418786a941b62e9d129465bf
 query_filters:
   - role: juniper-switch
 device_query_filters:

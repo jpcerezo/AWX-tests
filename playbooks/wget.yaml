@@ -2,7 +2,8 @@
 - name: Download file from var_url and save to var_dir
   hosts: localhost
   gather_facts: no
-  become: true
+  become_method: sudo
+#  become: true
   vars:
     url: "{{ var_url }}"
     dir: "{{ var_dir }}"

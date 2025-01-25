@@ -1,0 +1,36 @@
+---
+- hosts: manufacturers_juniper
+  #collections:
+  # - juniper.device
+  roles: 
+    - Juniper.junos
+  gather_facts: false
+  vars:
+    netconf_port: 830
+    wait_time: 20
+    ansible_user: juampe
+    ansible_password: pimp01
+  tasks:
+  #- name: Checking NETCONF connectivity
+  #  wait_for: host={{ inventory_hostname }} port={{ netconf_port }} timeout={{ wait_time }}
+  #  ansible.builtin.wait_for:
+  #    host: "{{ inventory_hostname }}"
+  #    netconf_port: 830
+  #    wait_time: 20
+  - name: Getting fakts
+    connection: netconf
+    junos_facts:
+      config_format: json
+      gather_subset:
+       # - '!config'
+       # - 'default'
+       - "interfaces"
+       # - 'hardware'
+       # - 'ofacts'
+      provider:
+        host: "{{hostvars[inventory_hostname].ansible_host}}"
+        port: "{{hostvars[inventory_hostname].ansible_port|default('22')}}"
+        username: "juampe"
+        password: "pimp01"
+        #password: "{{hostvars[inventory_hostname].ansible_password}}"
+    register: facts
