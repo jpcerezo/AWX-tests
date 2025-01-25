@@ -1,6 +1,6 @@
 ---
 - name: check netconf connection
-  hosts: all
+  hosts: "{{ var_hosts }}"
   collections:
     - juniper.device
   connection: local
