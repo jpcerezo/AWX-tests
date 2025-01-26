@@ -2,6 +2,8 @@
 # netbox_inv.yml
 
 plugin: netbox.netbox.nb_inventory
+token: your_netbox_token  # Add this to netbox_inventory.yaml
+api_endpoint: http://192.168.1.102:8000
 api_endpoint: http://192.168.1.102:8000
 validate_certs: False
 
