@@ -3,22 +3,25 @@
 ---
 plugin: netbox.netbox.nb_inventory
 api_endpoint: http://192.168.1.102:8000
-<<<<<<< HEAD
 validate_certs: true
 config_context: false
 
 group_by: 
   - manufacturers
-=======
 validate_certs: false  
 config_context: true
 group_by:
   - device_types
->>>>>>> 14c35f8ad581cafe418786a941b62e9d129465bf
 query_filters:
   - role: juniper-switch
 device_query_filters:
    - tag: metal
+
+#query_filters:
+#  - cf_foo: bar
+compose:
+  ansible_network_os: platform.slug
+  
 #device_query_filters:
 #  - has_primary_ip: 'true'
 #  - tenant__n: FFN
@@ -39,8 +42,3 @@ device_query_filters:
 # the query_filters work as a logical **OR**
 #
 # Prefix any custom fields with cf_ and pass the field value with the regular NetBox query string
-
-#query_filters:
-#  - cf_foo: bar
-compose:
-  ansible_network_os: platform.slug
