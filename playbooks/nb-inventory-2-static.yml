@@ -63,12 +63,12 @@
           - "File owner: {{ file_stat.stat.pw_name }}"
 
 # Example inventory configuration file (inventory_config.yml)
----
-plugin: netbox
-api_endpoint: "{{ netbox_url }}"
-token: "{{ netbox_token }}"
-validate_certs: yes
-config_context: no
-group_by:
-  - device_role
-interfaces: yes
+# ---
+# plugin: netbox
+# api_endpoint: "{{ netbox_url }}"
+# token: "{{ netbox_token }}"
+# validate_certs: yes
+# config_context: no
+# group_by:
+#   - device_role
+# interfaces: yes
