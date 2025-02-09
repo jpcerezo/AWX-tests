@@ -4,7 +4,7 @@
   gather_facts: false
   
   vars:
-    netbox_url: "http://192.168.1.102;8000"
+    netbox_url: "http://192.168.1.102:8000"
     netbox_token: "{{ lookup('env', 'NETBOX_TOKEN') }}"
     inventory_file: "juniper_inventory.yml"
     output_dir: "{{ playbook_dir }}/inventories"
@@ -37,27 +37,30 @@
         routers: "{{ netbox_devices.json.results | selectattr('role.name', 'equalto', 'Juniper Router') | list }}"
         switches: "{{ netbox_devices.json.results | selectattr('role.name', 'equalto', 'Juniper Switch') | list }}"
 
-    - name: Create device dictionaries
+    - name: Create router hosts dictionary
       set_fact:
-        router_hosts: "{{ routers | map(attribute='name') | list | 
-          map('regex_replace', '(.*)', '{\"\\1\": {}}') | map('from_yaml') | list | combine }}"
-        switch_hosts: "{{ switches | map(attribute='name') | list |
-          map('regex_replace', '(.*)', '{\"\\1\": {}}') | map('from_yaml') | list | combine }}"
-        hostvars_dict: "{{ hostvars_temp }}"
-      vars:
-        hostvars_temp: "{{ {} }}"
-        
-    - name: Build hostvars for each device
+        router_hosts: "{{ dict(routers | map(attribute='name') | map('regex_replace', '^(.*)$', '\\1={}') | map('split', '=')) }}"
+
+    - name: Create switch hosts dictionary
       set_fact:
-        hostvars_dict: "{{ hostvars_dict | combine({
-          item.name: {
-            'ansible_host': item.primary_ip4.address | regex_replace('/.*$', '') if item.primary_ip4 is defined else item.name,
-            'device_model': item.device_type.model,
-            'site': item.site.name,
-            'role': item.role.name,
-            'tags': item.tags | map(attribute='name') | list
-          }
-        }) }}"
+        switch_hosts: "{{ dict(switches | map(attribute='name') | map('regex_replace', '^(.*)$', '\\1={}') | map('split', '=')) }}"
+
+    - name: Create host vars
+      set_fact:
+        host_vars: "{{ {} }}"
+
+    - name: Populate host vars
+      set_fact:
+        host_vars: "{{ host_vars | combine({ item.name: {
+          'ansible_host': item.primary_ip4.address | regex_replace('/.*$', ''),
+          'device_type': item.device_type.model,
+          'site': item.site.name,
+          'role': item.role.name,
+          'tags': item.tags | map(attribute='name') | list,
+          'tenant': item.tenant.name | default(''),
+          'rack': item.rack.name | default(''),
+          'location': item.location.name | default('')
+        }}) }}"
       loop: "{{ netbox_devices.json.results }}"
 
     - name: Create final inventory structure
@@ -72,7 +75,7 @@
                   juniper_switches:
                     hosts: "{{ switch_hosts }}"
           _meta:
-            hostvars: "{{ hostvars_dict }}"
+            hostvars: "{{ host_vars }}"
 
     - name: Save inventory to YAML file
       copy:

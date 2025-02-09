@@ -1,0 +1,82 @@
+_meta:
+    hostvars:
+        ex3:
+            ansible_host: 192.168.1.176
+            device_type: ex2300
+            location: BATSTORE
+            rack: RACK 01
+            role: Juniper Switch
+            site: PRADONORTE
+            tags:
+            - metal
+            - switch
+            tenant: ''
+        ictn01-fra:
+            ansible_host: 192.168.1.190
+            device_type: vSRX
+            location: BATSTORE
+            rack: RACK 01
+            role: Juniper Router
+            site: PRADONORTE
+            tags:
+            - router
+            - virtual
+            tenant: INETLABS
+        ictn01-tip:
+            ansible_host: 192.168.1.192
+            device_type: vSRX
+            location: BATSTORE
+            rack: RACK 01
+            role: Juniper Router
+            site: PRADONORTE
+            tags:
+            - router
+            - virtual
+            tenant: INETLABS
+        ictn02-fra:
+            ansible_host: 192.168.1.191
+            device_type: vSRX
+            location: BATSTORE
+            rack: RACK 01
+            role: Juniper Router
+            site: PRADONORTE
+            tags:
+            - router
+            - virtual
+            tenant: INETLABS
+        ictn02-tip:
+            ansible_host: 192.168.1.193
+            device_type: vSRX
+            location: BATSTORE
+            rack: RACK 01
+            role: Juniper Router
+            site: PRADONORTE
+            tags:
+            - router
+            - virtual
+            tenant: INETLABS
+        srx3:
+            ansible_host: 192.168.1.175
+            device_type: SRX300
+            location: BATSTORE
+            rack: RACK 01
+            role: Juniper Router
+            site: PRADONORTE
+            tags:
+            - metal
+            - router
+            tenant: INETLABS
+all:
+    children:
+        juniper:
+            children:
+                juniper_routers:
+                    hosts:
+                        ictn01-fra: '{}'
+                        ictn01-tip: '{}'
+                        ictn02-fra: '{}'
+                        ictn02-tip: '{}'
+                        srx3: '{}'
+                juniper_switches:
+                    hosts:
+                        ex3: '{}'
