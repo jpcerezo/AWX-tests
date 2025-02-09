@@ -1,2 +1,2 @@
 netbox_url: "http://192.168.1.102:8000"
-#netbox_token: "your-netbox-token"
+netbox_token: "0af6135c512b6dfb9707f4079f8183ceed095a07"
