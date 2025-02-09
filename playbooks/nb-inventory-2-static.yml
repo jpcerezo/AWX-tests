@@ -1,0 +1,74 @@
+---
+- name: Fetch inventory from Netbox and save as static inventory
+  hosts: localhost
+  gather_facts: false
+  
+  vars:
+    netbox_url: "http://192.168.1.102:8000"  # Replace with your Netbox URL
+    netbox_token: "{{ lookup('env', 'NETBOX_TOKEN') }}"  # Token should be set as environment variable
+    
+    output_path: "/shared/inventories/netbox_inventory.yml"  # Path accessible from outside AWX
+    
+  tasks:
+    - name: Create output directory if it doesn't exist
+      file:
+        path: "{{ output_path | dirname }}"
+        state: directory
+        mode: '0755'
+      
+    - name: Fetch device information from Netbox
+      uri:
+        url: "{{ netbox_url }}/api/dcim/devices/?status=active"
+        method: GET
+        headers:
+          Authorization: "Token {{ netbox_token }}"
+          Accept: "application/json"
+        validate_certs: no  # Set to no if using self-signed certificates
+        return_content: yes
+      register: netbox_devices
+      
+    - name: Process Netbox data and create inventory structure
+      set_fact:
+        inventory_data:
+          all:
+            children: "{{ groups | default({}) }}"
+      vars:
+        groups: "{{ netbox_devices.json.results | 
+                    group_by('device_role.name') | 
+                    dict2items | 
+                    map('combine', {'value': 
+                      {'hosts': item.value | 
+                        map(attribute='name') | 
+                        list
+                      }
+                    }) |
+                    items2dict }}"
+    
+    - name: Save inventory to YAML file
+      copy:
+        content: "{{ inventory_data | to_nice_yaml }}"
+        dest: "{{ output_path }}"
+        mode: '0644'
+      
+    - name: Verify file is readable
+      stat:
+        path: "{{ output_path }}"
+      register: file_stat
+      
+    - name: Display file information
+      debug:
+        msg: 
+          - "Inventory file created at: {{ output_path }}"
+          - "File permissions: {{ file_stat.stat.mode }}"
+          - "File owner: {{ file_stat.stat.pw_name }}"
+
+# Example inventory configuration file (inventory_config.yml)
+---
+plugin: netbox
+api_endpoint: "{{ netbox_url }}"
+token: "{{ netbox_token }}"
+validate_certs: yes
+config_context: no
+group_by:
+  - device_role
+interfaces: yes
