@@ -1,0 +1,93 @@
+---
+- name: Fetch Juniper inventory from Netbox and save as static inventory
+  hosts: localhost
+  gather_facts: false
+  
+  vars:
+    netbox_url: "https://netbox.inetlabs"
+    netbox_token: "{{ lookup('env', 'NETBOX_TOKEN') }}"
+    output_path: "inventories/juniper_inventory.yml"
+    
+  tasks:
+    - name: Create output directory if it doesn't exist
+      file:
+        path: "{{ output_path | dirname }}"
+        state: directory
+        mode: '0755'
+      
+    - name: Fetch Juniper devices from Netbox
+      uri:
+        url: "{{ netbox_url }}/api/dcim/devices/?status=active&manufacturer=juniper"
+        method: GET
+        headers:
+          Authorization: "Token {{ netbox_token }}"
+          Accept: "application/json"
+        validate_certs: false 
+        return_content: true
+      register: netbox_devices
+      
+    - name: Process Netbox data and create inventory structure
+      set_fact:
+        inventory_data:
+          all:
+            children:
+              juniper:
+                children: "{{ device_groups }}"
+      vars:
+        # First group by device role, then by device type
+        device_groups: "{{ netbox_devices.json.results | 
+                          group_by('device_role.name') | 
+                          dict2items | 
+                          map('combine', {'key': 'role_' + item.key}) |
+                          map('combine', {'value': {
+                            'children': item.value | 
+                              group_by('device_type.model') | 
+                              dict2items |
+                              map('combine', {'key': item.key + '_' + item.value[0].device_type.model | replace(' ', '_') | lower}) |
+                              map('combine', {'value': {
+                                'hosts': item.value | 
+                                  map(attribute='name') | 
+                                  list
+                              }}) |
+                              items2dict
+                          }}) |
+                          items2dict }}"
+    
+    - name: Add host variables
+      set_fact:
+        inventory_data: "{{ inventory_data | combine({
+          '_meta': {
+            'hostvars': hostvars_dict
+          }
+        }) }}"
+      vars:
+        hostvars_dict: "{{ netbox_devices.json.results | 
+                          map('combine', {'key': item.name, 'value': {
+                            'ansible_host': item.primary_ip4.address | default(item.name) | regex_replace('/.*$', ''),
+                            'device_role': item.device_role.name,
+                            'device_type': item.device_type.model,
+                            'site': item.site.name,
+                            'platform': item.platform.name | default('junos'),
+                            'serial': item.serial,
+                            'rack': item.rack.name | default(''),
+                            'tags': item.tags | map(attribute='name') | list
+                          }}) |
+                          items2dict }}"
+    
+    - name: Save inventory to YAML file
+      copy:
+        content: "{{ inventory_data | to_nice_yaml }}"
+        dest: "{{ output_path }}"
+        mode: '0644'
+      
+    - name: Verify file is readable
+      stat:
+        path: "{{ output_path }}"
+      register: file_stat
+      
+    - name: Display file information
+      debug:
+        msg: 
+          - "Inventory file created at: {{ output_path }}"
+          - "File permissions: {{ file_stat.stat.mode }}"
+          - "Groups created: {{ device_groups.keys() | list }}"
