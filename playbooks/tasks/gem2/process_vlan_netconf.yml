@@ -1,0 +1,16 @@
+---
+- name: Parse VLAN data (NETCONF) and append to CSV
+  community.general.xml:
+    xmlstring: "{{ vlan_configs }}"
+    xpath: "/configuration/vlans/vlan"
+    content: "list"
+  register: vlan_list
+
+- name: Write to CSV file (NETCONF)
+  lineinfile:
+    path: "{{ csv_file }}"
+    line: >-
+      {{ inventory_hostname }},"{{ item.name | default('') }}","{{ item.vlan_id | default('') }}","{{ item.description | default('') }}","{{ item.l3_interface | default('') }}",active
+    create: yes
+  loop: "{{ vlan_list.matches }}"
+  delegate_to: localhost

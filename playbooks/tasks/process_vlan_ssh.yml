@@ -1,0 +1,20 @@
+---
+- name: Get VLAN configuration (JSON format)
+  junos_command:
+    commands:
+      - show configuration vlans | display json
+  register: vlan_json_output
+
+- name: Parse VLAN data (SSH - JSON) and append to CSV
+  blockinfile:  # Use blockinfile for consistency and efficiency
+    path: "{{ csv_file }}"
+    create: yes
+    block: |
+      {% if vlan_json_output.stdout | from_json | jsonpath('$.configuration.vlans.vlan') %}
+      {% for vlan in vlan_json_output.stdout | from_json | jsonpath('$.configuration.vlans.vlan') %}
+      {{ inventory_hostname }},{{ vlan.name | default('') }},{{ vlan['vlan-id'] | default('') }},{{ vlan.description | default('') }},{{ vlan['l3-interface'] | default('') }},{{ device_status[inventory_hostname].connection_status }}
+      {% endfor %}
+      {% endif %}
+  delegate_to: localhost
+  run_once: true
+  when: vlan_json_output.stdout is defined and vlan_json_output.stdout is defined

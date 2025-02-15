@@ -1,0 +1,12 @@
+Error Report: VLAN Configuration Retrieval
+
+Timestamp: 20250211_170256
+
+Device: mgmtsw01.jhb2.de-cix.management
+Connection Status: FAILED
+Connection Type: ssh
+Port: 22
+Error: 
+libssh: The authenticity of host 'mgmtsw01.jhb2.de-cix.management' can't be established due to 'Host is unknown: be:c6:d1:c5:45:d0:12:c3:ae:b0:93:ca:58:3c:5e:61:8a:91:4d:6e'.
+The ssh-ed25519 key fingerprint is SHA1:vsbRxUXQEsOusJPKWDxeYYqRTW4.
+-----------------------------------------

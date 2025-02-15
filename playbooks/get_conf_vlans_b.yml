@@ -1,0 +1,40 @@
+---
+- name: Retrieve VLAN configurations from Juniper devices
+  hosts: testlabs 
+  gather_facts: no
+  vars:
+    ansible_connection: netconf
+    ansible_network_os: junos
+    csv_header: "hostname,vlan_name,vlan_id,description,l3_interface,status\n"
+
+  tasks:
+    - name: Get configured VLAN information
+      junos_command:
+        commands:
+          - 'show configuration vlans'
+      register: vlan_output
+      ignore_errors: yes
+
+    - name: Create CSV file header
+      copy:
+        content: "{{ csv_header }}"
+        dest: "./vlans_inventory.csv"
+      delegate_to: localhost
+      run_once: true
+
+    - name: Parse and add VLAN information to CSV
+      lineinfile:
+        path: "./vlans_inventory.csv"
+        line: "{{ inventory_hostname }},{{ vlan.name }},{{ vlan.id }},{{ vlan.description }},{{ vlan.l3_interface }},{{ vlan.status }}"
+      delegate_to: localhost
+      vars:
+        raw_content: "{{ vlan_output.stdout[0] }}"
+        vlan:
+          name: "{{ item[1] }}"
+          id: "{{ item[2] | regex_search('vlan-id ([0-9]+);', '\\1') | first | default('') }}"
+          description: "{{ item[2] | regex_search('description \"([^\"]+)\";', '\\1') | default('') }}"
+          l3_interface: "{{ item[2] | regex_search('l3-interface ([\\w.-]+);', '\\1') | default('') }}"
+          status: "{{ 'inactive' if item[0] else 'active' }}"
+      loop: "{{ raw_content | regex_findall('(inactive: )?([\\w.-]+) {([^}]+)}') }}"
+      loop_control:
+        label: "{{ item[1] }}"

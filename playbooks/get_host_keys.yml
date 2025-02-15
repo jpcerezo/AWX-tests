@@ -1,0 +1,19 @@
+- name: Gather SSH host keys
+  hosts: "{{ var_hosts }}" 
+  gather_facts: no
+  tasks:
+    - name: Scan for host key
+      ansible.builtin.shell: "ssh-keyscan {{ inventory_hostname }}"
+      register: hostkey_output
+      changed_when: false  # This task doesn't change anything on the target
+
+    - name: Add host key to known_hosts
+      ansible.builtin.lineinfile:
+        path: "~/.ssh/known_hosts"
+        line: "{{ hostkey_output.stdout_lines | first }}" # Only add the first line (avoid comments)
+        create: yes
+        state: present
+        mode: 0600  # Important: Set correct permissions!
+      delegate_to: localhost  # Run this on the control node
+      run_once: true #Very important, one host must do that.
+      when: hostkey_output.stdout_lines | length > 0 #Only if we retrieve data

@@ -1,0 +1,430 @@
+{
+    "changed": false,
+    "failed": false,
+    "stdout": [
+        {
+            "l2ng-l2ald-vlan-instance-information": [
+                {
+                    "l2ng-l2ald-vlan-instance-group": [
+                        {
+                            "l2ng-l2rtb-brief-summary": [
+                                {
+                                    "data": [
+                                        null
+                                    ]
+                                }
+                            ],
+                            "l2ng-l2rtb-name": [
+                                {
+                                    "data": "default-switch"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-member": [
+                                {
+                                    "l2ng-l2rtb-vlan-member-interface": [
+                                        {
+                                            "data": [
+                                                null
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-name": [
+                                {
+                                    "data": "default"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-tag": [
+                                {
+                                    "data": "1"
+                                }
+                            ]
+                        },
+                        {
+                            "l2ng-l2rtb-name": [
+                                {
+                                    "data": "default-switch"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-member": [
+                                {
+                                    "l2ng-l2rtb-vlan-member-interface": [
+                                        {
+                                            "data": [
+                                                null
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-name": [
+                                {
+                                    "data": "mgmt.10"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-tag": [
+                                {
+                                    "data": "10"
+                                }
+                            ]
+                        },
+                        {
+                            "l2ng-l2rtb-name": [
+                                {
+                                    "data": "default-switch"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-member": [
+                                {
+                                    "l2ng-l2rtb-vlan-member-interface": [
+                                        {
+                                            "data": [
+                                                null
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-name": [
+                                {
+                                    "data": "mgmt.20"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-tag": [
+                                {
+                                    "data": "36"
+                                }
+                            ]
+                        },
+                        {
+                            "l2ng-l2rtb-name": [
+                                {
+                                    "data": "default-switch"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-member": [
+                                {
+                                    "l2ng-l2rtb-vlan-member-interface": [
+                                        {
+                                            "data": [
+                                                null
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-name": [
+                                {
+                                    "data": "mgmt.507"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-tag": [
+                                {
+                                    "data": "507"
+                                }
+                            ]
+                        },
+                        {
+                            "l2ng-l2rtb-name": [
+                                {
+                                    "data": "default-switch"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-member": [
+                                {
+                                    "l2ng-l2rtb-vlan-member-interface": [
+                                        {
+                                            "data": [
+                                                null
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-name": [
+                                {
+                                    "data": "mgmt.901"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-tag": [
+                                {
+                                    "data": "901"
+                                }
+                            ]
+                        },
+                        {
+                            "l2ng-l2rtb-name": [
+                                {
+                                    "data": "default-switch"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-member": [
+                                {
+                                    "l2ng-l2rtb-vlan-member-interface": [
+                                        {
+                                            "data": [
+                                                null
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-name": [
+                                {
+                                    "data": "mgmt.902"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-tag": [
+                                {
+                                    "data": "902"
+                                }
+                            ]
+                        },
+                        {
+                            "l2ng-l2rtb-name": [
+                                {
+                                    "data": "default-switch"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-member": [
+                                {
+                                    "l2ng-l2rtb-vlan-member-interface": [
+                                        {
+                                            "data": [
+                                                null
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-name": [
+                                {
+                                    "data": "mgmt.99"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-tag": [
+                                {
+                                    "data": "99"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "stdout_lines": [
+        {
+            "l2ng-l2ald-vlan-instance-information": [
+                {
+                    "l2ng-l2ald-vlan-instance-group": [
+                        {
+                            "l2ng-l2rtb-brief-summary": [
+                                {
+                                    "data": [
+                                        null
+                                    ]
+                                }
+                            ],
+                            "l2ng-l2rtb-name": [
+                                {
+                                    "data": "default-switch"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-member": [
+                                {
+                                    "l2ng-l2rtb-vlan-member-interface": [
+                                        {
+                                            "data": [
+                                                null
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-name": [
+                                {
+                                    "data": "default"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-tag": [
+                                {
+                                    "data": "1"
+                                }
+                            ]
+                        },
+                        {
+                            "l2ng-l2rtb-name": [
+                                {
+                                    "data": "default-switch"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-member": [
+                                {
+                                    "l2ng-l2rtb-vlan-member-interface": [
+                                        {
+                                            "data": [
+                                                null
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-name": [
+                                {
+                                    "data": "mgmt.10"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-tag": [
+                                {
+                                    "data": "10"
+                                }
+                            ]
+                        },
+                        {
+                            "l2ng-l2rtb-name": [
+                                {
+                                    "data": "default-switch"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-member": [
+                                {
+                                    "l2ng-l2rtb-vlan-member-interface": [
+                                        {
+                                            "data": [
+                                                null
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-name": [
+                                {
+                                    "data": "mgmt.20"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-tag": [
+                                {
+                                    "data": "36"
+                                }
+                            ]
+                        },
+                        {
+                            "l2ng-l2rtb-name": [
+                                {
+                                    "data": "default-switch"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-member": [
+                                {
+                                    "l2ng-l2rtb-vlan-member-interface": [
+                                        {
+                                            "data": [
+                                                null
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-name": [
+                                {
+                                    "data": "mgmt.507"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-tag": [
+                                {
+                                    "data": "507"
+                                }
+                            ]
+                        },
+                        {
+                            "l2ng-l2rtb-name": [
+                                {
+                                    "data": "default-switch"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-member": [
+                                {
+                                    "l2ng-l2rtb-vlan-member-interface": [
+                                        {
+                                            "data": [
+                                                null
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-name": [
+                                {
+                                    "data": "mgmt.901"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-tag": [
+                                {
+                                    "data": "901"
+                                }
+                            ]
+                        },
+                        {
+                            "l2ng-l2rtb-name": [
+                                {
+                                    "data": "default-switch"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-member": [
+                                {
+                                    "l2ng-l2rtb-vlan-member-interface": [
+                                        {
+                                            "data": [
+                                                null
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-name": [
+                                {
+                                    "data": "mgmt.902"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-tag": [
+                                {
+                                    "data": "902"
+                                }
+                            ]
+                        },
+                        {
+                            "l2ng-l2rtb-name": [
+                                {
+                                    "data": "default-switch"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-member": [
+                                {
+                                    "l2ng-l2rtb-vlan-member-interface": [
+                                        {
+                                            "data": [
+                                                null
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-name": [
+                                {
+                                    "data": "mgmt.99"
+                                }
+                            ],
+                            "l2ng-l2rtb-vlan-tag": [
+                                {
+                                    "data": "99"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

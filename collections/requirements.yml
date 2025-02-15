@@ -1,4 +1,5 @@
 ---
 collections:
-- name: netbox.netbox
-- name: juniper.device 
+  - name: netbox.netbox
+  - name: juniper.device 
+  - name: community.general

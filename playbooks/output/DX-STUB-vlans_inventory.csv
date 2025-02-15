@@ -1,0 +1,108 @@
+hostname,vlan_name,vlan_id,description,l3_interface,status
+mgmtsw01.ist5.de-cix.management,"set vlans mgmt.140","","","",active
+mgmtsw01.ist7.de-cix.management,"set vlans mgmt.140","","","",active
+mgmtsw01.ist5.de-cix.management,"set vlans mgmt.142","","","",active
+mgmtsw01.ist7.de-cix.management,"set vlans mgmt.142","","","",active
+mgmtsw01.ist7.de-cix.management,"set vlans mgmt.142","vlan-id 142","","",active
+mgmtsw01.ist7.de-cix.management,"set vlans mgmt.142","","","l3-interface irb.142",active
+mgmtsw01.ist7.de-cix.management,"set vlans mgmt.170","","","",active
+mgmtsw01.ist5.de-cix.management,"set vlans quarantine","","description "Unused Ports"","",active
+mgmtsw01.ist5.de-cix.management,"set vlans quarantine","vlan-id 999","","",active
+mgmtsw01.ist7.de-cix.management,"set vlans quarantine","vlan-id 999","","",active
+mgmtsw01.ist7.de-cix.management,"set vlans default","vlan-id 1","","",active
+mgmtsw01.ist5.de-cix.management,"set vlans mgmt.140","vlan-id 140","","",active
+mgmtsw01.ist7.de-cix.management,"set vlans mgmt.140","vlan-id 140","","",active
+mgmtsw01.ist5.de-cix.management,"set vlans mgmt.142","vlan-id 142","","",active
+mgmtsw01.ist5.de-cix.management,"set vlans mgmt.142","","","l3-interface irb.142",active
+mgmtsw01.ist5.de-cix.management,"set vlans mgmt.170","","","",active
+mgmtsw01.ist5.de-cix.management,"set vlans mgmt.170","vlan-id 170","","",active
+mgmtsw01.ist7.de-cix.management,"set vlans mgmt.170","vlan-id 170","","",active
+mgmtsw01.ist7.de-cix.management,"set vlans quarantine","","description "Unused Ports"","",active
+mgmtsw01.nyc17.de-cix.management,"set vlans console","","description "Server IP OOB"","",active
+mgmtsw01.nyc18.de-cix.management,"set vlans mgmt.100","vlan-id 100","","",active
+mgmtsw01.nyc18.de-cix.management,"set vlans mgmt.109","","","",active
+mgmtsw01.nyc17.de-cix.management,"set vlans mgmt-appliances","vlan-id 109","","",active
+mgmtsw01.nyc17.de-cix.management,"set vlans mgmt-appliances","","","l3-interface irb.109",active
+mgmtsw01.nyc18.de-cix.management,"set vlans mgmt.110","","","",active
+mgmtsw01.nyc17.de-cix.management,"set vlans mgmt-production","vlan-id 100","","",active
+mgmtsw01.nyc18.de-cix.management,"set vlans quarantine","","description "Unused Ports"","",active
+mgmtsw01.nyc17.de-cix.management,"set vlans opticals","","description "Opticals Management"","",active
+mgmtsw01.nyc18.de-cix.management,"set vlans quarantine","vlan-id 999","","",active
+mgmtsw01.nyc17.de-cix.management,"set vlans quarantine","","description "Unused Ports"","",active
+mgmtsw01.nyc17.de-cix.management,"set vlans quarantine","vlan-id 999","","",active
+mgmtsw01.bcn4.de-cix.management,"set vlans mgmt.100","","description "mgmt.100 bcn"","",active
+mgmtsw01.bcn4.de-cix.management,"set vlans mgmt.100","vlan-id 100","","",active
+mgmtsw01.bcn4.de-cix.management,"set vlans mgmt.100","","","l3-interface irb.100",active
+mgmtsw01.lis3.de-cix.management,"set vlans mgmt.102","","description "ICP Router Management"","",active
+mgmtsw01.bcn4.de-cix.management,"set vlans mgmt.102","vlan-id 102","","",active
+mgmtsw01.lis3.de-cix.management,"set vlans mgmt.102","vlan-id 102","","",active
+mgmtsw01.lis3.de-cix.management,"set vlans mgmt.109","","description "Optical Transport Mgmt"","",active
+mgmtsw01.bcn4.de-cix.management,"set vlans mgmt.199","vlan-id 199","","",active
+mgmtsw01.bcn4.de-cix.management,"set vlans quarantine","","description "Unused Ports"","",active
+mgmtsw01.lis3.de-cix.management,"set vlans mgmt.199","vlan-id 199","","",active
+mgmtsw01.lis3.de-cix.management,"set vlans quarantine","","description "Unused Ports"","",active
+mgmtsw01.lis3.de-cix.management,"set vlans quarantine","vlan-id 999","","",active
+mgmtsw01.ams1.de-cix.management,"set vlans quarantine","","description "Unused Ports"","",active
+mgmtsw01.ams1.de-cix.management,"set vlans quarantine","vlan-id 999","","",active
+mgmtsw01.ams1.de-cix.management,"set vlans scp.mgmt.100","","description "mgmt.100 SCP.FRA"","",active
+mgmtsw01.ams1.de-cix.management,"set vlans scp.mgmt.100","vlan-id 100","","",active
+mgmtsw01.ams1.de-cix.management,"set vlans scp.mgmt.100","","","l3-interface irb.100",active
+mgmtsw01.ams1.de-cix.management,"set vlans scp.mgmt.102","","description "mgmt.102 SCP.FRA"","",active
+mgmtsw01.ams1.de-cix.management,"set vlans scp.mgmt.102","vlan-id 102","","",active
+mgmtsw01.ams1.de-cix.management,"set vlans scp.mgmt.109","","description "mgmt.109 SCP.FRA"","",active
+mgmtsw01.ams1.de-cix.management,"set vlans scp.mgmt.109","vlan-id 109","","",active
+mgmtsw01.ams1.de-cix.management,"set vlans scp.mgmt.199","","description "mgmt.199 SCP.FRA"","",active
+mgmtsw01.ams1.de-cix.management,"set vlans scp.mgmt.199","vlan-id 199","","",active
+mgmtsw01.ric3.de-cix.management,"set vlans mgmt.100","","description "SCP Switch Management"","",active
+mgmtsw01.ric3.de-cix.management,"set vlans mgmt.100","vlan-id 100","","",active
+mgmtsw01.ric3.de-cix.management,"set vlans mgmt.100","","","l3-interface irb.100",active
+mgmtsw01.ord3.de-cix.management,"set vlans mgmt.102","","description "ICP Router Management"","",active
+mgmtsw01.ord3.de-cix.management,"set vlans mgmt.102","vlan-id 102","","",active
+mgmtsw01.ric3.de-cix.management,"set vlans mgmt.102","vlan-id 102","","",active
+mgmtsw01.ord3.de-cix.management,"set vlans mgmt.199","","description "Stub Site OOB"","",active
+mgmtsw01.ric3.de-cix.management,"set vlans mgmt.199","","description "Stub Site OOB"","",active
+mgmtsw01.ord3.de-cix.management,"set vlans mgmt.199","vlan-id 199","","",active
+mgmtsw01.ric3.de-cix.management,"set vlans mgmt.199","vlan-id 199","","",active
+mgmtsw01.ord3.de-cix.management,"set vlans quarantine","","description "Unused Ports"","",active
+mgmtsw01.ric3.de-cix.management,"set vlans quarantine","","description "Unused Ports"","",active
+mgmtsw01.ord3.de-cix.management,"set vlans quarantine","vlan-id 999","","",active
+mgmtsw01.ric3.de-cix.management,"set vlans quarantine","vlan-id 999","","",active
+mgmtsw01.sea1.de-cix.management,"set vlans mgmt.100","","description "mgmt.100 phx"","",active
+mgmtsw01.phx3.de-cix.management,"set vlans mgmt.100","","description "SCP Switch Management"","",active
+mgmtsw01.phx3.de-cix.management,"set vlans mgmt.100","vlan-id 100","","",active
+mgmtsw01.phx4.de-cix.management,"set vlans mgmt.100","vlan-id 100","","",active
+mgmtsw01.dfw1.de-cix.management,"set vlans mgmt.100","","","l3-interface irb.100",active
+mgmtsw01.dfw4.de-cix.management,"set vlans mgmt.100","","","l3-interface irb.100",active
+mgmtsw01.phx3.de-cix.management,"set vlans mgmt.102","","description "ICP Router Management"","",active
+mgmtsw01.phx4.de-cix.management,"set vlans mgmt.102","vlan-id 102","","",active
+mgmtsw01.phx3.de-cix.management,"set vlans mgmt.102","vlan-id 102","","",active
+mgmtsw01.dfw1.de-cix.management,"set vlans mgmt.102","vlan-id 102","","",active
+mgmtsw01.phx3.de-cix.management,"set vlans mgmt.109","","description "Optical Transport Mgmt"","",active
+mgmtsw01.phx3.de-cix.management,"set vlans mgmt.109","vlan-id 109","","",active
+mgmtsw01.dfw1.de-cix.management,"set vlans mgmt.109","vlan-id 109","","",active
+mgmtsw01.sea1.de-cix.management,"set vlans mgmt.199","vlan-id 199","","",active
+mgmtsw01.phx4.de-cix.management,"set vlans mgmt.199","vlan-id 199","","",active
+mgmtsw01.dfw4.de-cix.management,"set vlans mgmt.109","vlan-id 109","","",active
+mgmtsw01.phx3.de-cix.management,"set vlans mgmt.199","","description "Stub Site OOB"","",active
+mgmtsw01.sea1.de-cix.management,"set vlans quarantine","","description "Unused Ports"","",active
+mgmtsw01.phx4.de-cix.management,"set vlans quarantine","","description "Unused Ports"","",active
+mgmtsw01.dfw4.de-cix.management,"set vlans mgmt.199","vlan-id 199","","",active
+mgmtsw01.phx3.de-cix.management,"set vlans quarantine","","description "Unused Ports"","",active
+mgmtsw01.dfw9.de-cix.management,"set vlans mgmt.100","","description "mgmt.100 phx"","",active
+mgmtsw01.dfw4.de-cix.management,"set vlans quarantine","vlan-id 999","","",active
+mgmtsw01.dfw9.de-cix.management,"set vlans mgmt.100","vlan-id 100","","",active
+mgmtsw01.dfw8.de-cix.management,"set vlans mgmt.100","","","l3-interface irb.100",active
+mgmtsw01.dfw9.de-cix.management,"set vlans mgmt.102","","description "mgmt.102 phx"","",active
+mgmtsw01.dfw11.de-cix.management,"set vlans mgmt.100","","","l3-interface irb.100",active
+mgmtsw01.dfw9.de-cix.management,"set vlans mgmt.199","","description "mgmt.199 phx"","",active
+mgmtsw01.dfw9.de-cix.management,"set vlans mgmt.199","vlan-id 199","","",active
+mgmtsw01.dfw8.de-cix.management,"set vlans mgmt.109","vlan-id 109","","",active
+mgmtsw01.dfw9.de-cix.management,"set vlans quarantine","","description "Unused Ports"","",active
+mgmtsw01.dfw11.de-cix.management,"set vlans mgmt.109","","description "mgmt.109 phx"","",active
+mgmtsw01.dfw9.de-cix.management,"set vlans quarantine","vlan-id 999","","",active
+mgmtsw01.dfw11.de-cix.management,"set vlans mgmt.199","","description "mgmt.199 phx"","",active
+mgmtsw01.hou1.de-cix.management,"set vlans quarantine","","description "Unused Ports"","",active
+mgmtsw01.dfw8.de-cix.management,"set vlans quarantine","","description "Unused Ports"","",active
+mgmtsw01.dfw11.de-cix.management,"set vlans mgmt.199","vlan-id 199","","",active
+mgmtsw01.dfw11.de-cix.management,"set vlans quarantine","","description "Unused Ports"","",active
+mgmtsw01.hou1.de-cix.management,"set vlans v223","","","l3-interface irb.223",active

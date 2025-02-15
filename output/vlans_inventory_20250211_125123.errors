@@ -1,0 +1,16 @@
+VLAN Configuration Retrieval Error Report
+Generated: 20250211_125123
+
+Failed Devices:
+Device: mgmtsw01.dfw9.de-cix.management
+--------------------------------------------------
+Error: command timeout triggered, timeout value is 30 secs.
+See the timeout setting options in the Network Debug and Troubleshooting Guide.
+
+
+Summary:
+--------
+Total Devices: 1
+Failed Devices: 1
+Success Rate: 0.0%
+Generated: 20250211_125123

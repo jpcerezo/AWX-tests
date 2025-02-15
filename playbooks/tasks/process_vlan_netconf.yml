@@ -1,0 +1,19 @@
+---
+- name: Parse VLAN data (NETCONF) and append to CSV
+  set_fact:
+    vlan_data: "{{ netconf_result.stdout | xml_to_dict }}" # Convert XML to dictionary
+  when: netconf_result.stdout is defined
+
+- name: Write to CSV file (NETCONF)
+  blockinfile:
+    path: "{{ csv_file }}"
+    create: yes
+    block: |
+      {% if vlan_data.rpc_reply.data.configuration.vlans is defined %}
+      {% for vlan in vlan_data.rpc_reply.data.configuration.vlans.vlan %}
+      {{ inventory_hostname }},{{ vlan.name | default('') }},{{ vlan['vlan-id'] | default('') }},{{ vlan.description | default('') }},{{ vlan['l3-interface'] | default('') }},{{ device_status[inventory_hostname].connection_status }}
+      {% endfor %}
+      {% endif %}
+  delegate_to: localhost
+  run_once: true
+  when: netconf_result.stdout is defined

@@ -1,0 +1,10 @@
+Error Report: VLAN Configuration Retrieval
+
+Timestamp: 20250212_172142
+
+Device: ex23.inetlabs
+Connection Status: FAILED
+Connection Type: ssh
+Port: 22
+Error: ssh connection failed: ssh connect failed: Failed to resolve hostname ex23.inetlabs (nodename nor servname provided, or not known)
+-----------------------------------------

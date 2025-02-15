@@ -1,0 +1,14 @@
+Error Report: VLAN Configuration Retrieval
+
+Timestamp: {{ timestamp }}
+
+{% for host, status in device_status.items() %}
+{% if status.connection_status == 'failed' %}
+Device: {{ host }}
+Connection Status: FAILED
+Connection Type: {{ status.connection_type | default('Unknown') }}
+Port: {{ status.port | default('Unknown') }}
+Error: {{ status.error | default('No error message') }}
+-----------------------------------------
+{% endif %}
+{% endfor %}

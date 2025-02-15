@@ -1,0 +1,18 @@
+{
+    "changed": false,
+    "failed": false,
+    "stdout": [
+        {
+            "l2ald-bridge-instance-information": [
+                {}
+            ]
+        }
+    ],
+    "stdout_lines": [
+        {
+            "l2ald-bridge-instance-information": [
+                {}
+            ]
+        }
+    ]
+}

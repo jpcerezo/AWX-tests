@@ -1,0 +1,24 @@
+---
+- name: Parse VLAN data (SSH) and append to CSV
+  set_fact:
+    vlan_data: "{{ vlan_data | default([]) + [vlan_info] }}"
+  vars:
+    vlan_info:
+      vlan_name: "{{ item | regex_search('^set vlans ([^ ]+)', group=1) | default('') }}"
+      vlan_id: "{{ item | regex_search('vlan-id ([0-9]+)', group=1) | default('') }}"
+      description: "{{ item | regex_search('description \"(.*?)\"', group=1) | default('') }}"
+      l3_interface: "{{ item | regex_search('l3-interface ([^ ]+)', group=1) | default('') }}"
+      status: "{{ 'inactive' if 'inactive' in item else 'active' }}"
+  when: item | regex_search('^set vlans')
+  loop: "{{ vlan_output.stdout_lines[0] }}"
+  delegate_to: localhost
+
+- name: Write to CSV file (SSH)
+  lineinfile:
+    path: "{{ csv_file }}"
+    line: >-
+      {{ inventory_hostname }},"{{ item.vlan_name }}","{{ item.vlan_id }}","{{ item.description }}","{{ item.l3_interface }}",{{ item.status }}
+    create: yes
+  loop: "{{ vlan_data }}"
+  delegate_to: localhost
+  when: vlan_data is defined and vlan_data | length > 0

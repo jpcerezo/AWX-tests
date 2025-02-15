@@ -1,0 +1,7 @@
+---
+- hosts: localhost  # Or your target host
+  gather_facts: no
+  tasks:
+    - name: Test xml_to_dict
+      debug:
+        msg: "{{ '<root><test>data</test></root>' | xml_to_dict }}" 

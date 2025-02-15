@@ -1,0 +1,31 @@
+# tasks/process_vlan.yml
+---
+- name: Extract VLAN information
+  set_fact:
+    current_vlan:
+      name: "{{ item[1] }}"
+      id: "{{ (item[2] | regex_findall(regex_patterns.vlan_id))[0] | default('') }}"
+      description: "{{ (item[2] | regex_findall(regex_patterns.description))[0] | default('') }}"
+      l3_interface: "{{ (item[2] | regex_findall(regex_patterns.l3_interface))[0] | default('') }}"
+      status: "{{ 'inactive' if item[0] else 'active' }}"
+  loop: "{{ vlan_configs }}"
+  when: item[2] is regex(regex_patterns.vlan_id)
+  register: processed_vlans
+
+- name: Add valid VLANs to CSV
+  lineinfile:
+    path: "{{ csv_file }}"
+    line: >-
+      {{- inventory_hostname }},
+      {{- vlan.item.name }},
+      {{- vlan.item.id }},
+      {{- vlan.item.description }},
+      {{- vlan.item.l3_interface }},
+      {{- vlan.item.status }},
+      {{- timestamp }}
+  delegate_to: localhost
+  loop: "{{ processed_vlans.results | selectattr('ansible_facts', 'defined') | list }}"
+  loop_control:
+    loop_var: vlan
+    label: "{{ vlan.item.name }}"
+  when: vlan.item.id | default('') != ''

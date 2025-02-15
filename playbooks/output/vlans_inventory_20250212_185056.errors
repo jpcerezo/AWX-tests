@@ -1,0 +1,12 @@
+Error Report: VLAN Configuration Retrieval
+
+Timestamp: 20250212_185056
+
+Device: ex23.inetlabs
+Connection Status: FAILED
+Connection Type: ssh
+Port: 22
+Error: 
+libssh: The authenticity of host 'ex23.inetlabs' can't be established due to 'Host is unknown: c6:93:1a:bc:b2:65:46:9e:d2:4a:dc:f8:a4:ec:35:a2:41:4a:94:f4'.
+The ssh-ed25519 key fingerprint is SHA1:xpMavLJlRp7SStz4pOw1okFKlPQ.
+-----------------------------------------

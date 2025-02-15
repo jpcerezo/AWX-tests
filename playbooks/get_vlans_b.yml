@@ -1,0 +1,37 @@
+---
+- name: Retrieve VLAN configurations from Juniper devices
+  hosts: "{{ var_hosts }}" 
+  gather_facts: no
+  connection: local
+
+  vars:
+    ansible_network_os: junos
+    ansible_connection: netconf
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+    csv_header: "hostname,vlan_name,vlan_id,interfaces\n"
+
+  tasks:
+    - name: Get VLAN information
+      junos_command:
+        commands:
+          - show vlans
+        display: json
+      register: vlan_output
+      ignore_errors: yes
+
+    - name: Create CSV file header
+      copy:
+        content: "{{ csv_header }}"
+        dest: "./vlans_inventory.csv"
+      delegate_to: localhost
+      run_once: true
+
+    - name: Add VLAN information to CSV
+      lineinfile:
+        path: "./vlans_inventory.csv"
+        line: "{{ inventory_hostname }},{{ item['l2ng-l2rtb-vlan-name'][0]['data'] }},{{ item['l2ng-l2rtb-vlan-tag'][0]['data'] }},{{ (item['l2ng-l2rtb-vlan-member'] | map(attribute='l2ng-l2rtb-vlan-member-interface') | map(attribute=0) | map(attribute='data') | select('string') | list | join(';')) }}"
+      delegate_to: localhost
+      loop: "{{ vlan_output.stdout[0]['l2ng-l2ald-vlan-instance-information'][0]['l2ng-l2ald-vlan-instance-group'] }}"
+      when: 
+        - vlan_output.stdout[0]['l2ng-l2ald-vlan-instance-information'] is defined
+        - vlan_output.stdout[0]['l2ng-l2ald-vlan-instance-information'][0]['l2ng-l2ald-vlan-instance-group'] is defined

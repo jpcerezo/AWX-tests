@@ -1,0 +1,18 @@
+{# templates/error_report.j2 #}
+VLAN Configuration Retrieval Error Report
+Generated: {{ timestamp }}
+
+Failed Devices:
+{% for host, status in device_status.items() if status.command_error is defined %}
+Device: {{ host }}
+--------------------------------------------------
+Error: {{ status.error_msg }}
+
+{% endfor %}
+
+Summary:
+--------
+Total Devices: {{ device_status | length }}
+Failed Devices: {{ device_status | dict2items | selectattr('value.command_error', 'defined') | list | length }}
+Success Rate: {{ ((device_status | length - (device_status | dict2items | selectattr('value.command_error', 'defined') | list | length)) / device_status | length * 100) | round(2) }}%
+Generated: {{ timestamp }}

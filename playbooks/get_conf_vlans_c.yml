@@ -1,0 +1,134 @@
+---
+# VLAN Configuration Retrieval Playbook with Password Authentication
+# Author: Claude
+# Last modified: 2025-02-11
+
+- name: Retrieve VLAN configurations from Juniper devices
+  hosts: all
+  gather_facts: no
+  
+  vars:
+    # Connection settings
+    default_netconf_port: 830
+    default_ssh_port: 22
+    connection_timeout: 5
+    
+    # File naming and paths
+    timestamp: "{{ lookup('pipe', 'date +%Y%m%d_%H%M%S') }}"
+    output_dir: "./output"
+    csv_file: "{{ output_dir }}/vlans_inventory_{{ timestamp }}.csv"
+    error_file: "{{ output_dir }}/vlans_inventory_{{ timestamp }}.errors"
+    
+    # CSV format
+    csv_header: "hostname,vlan_name,vlan_id,description,l3_interface,status,last_updated\n"
+    
+    # Regex patterns for VLAN parsing
+    regex_patterns:
+      vlan_id: 'vlan-id\s+(\d+)\s*;'
+      description: 'description\s+"([^"]+)"\s*;'
+      l3_interface: 'l3-interface\s+([\w.-]+)\s*;'
+      
+    # Device tracking
+    device_status: {}
+
+    # Connection defaults
+    ansible_connection: ansible.netcommon.netconf
+    ansible_network_os: junipernetworks.junos.junos
+    ansible_command_timeout: 30
+  
+  pre_tasks:
+    - name: Create output directory
+      file:
+        path: "{{ output_dir }}"
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+      run_once: true
+      
+  tasks:
+    - name: Initialize device status
+      set_fact:
+        device_status: "{{ device_status | combine({inventory_hostname: {'host': inventory_hostname}}) }}"
+      
+    - name: Check port 830 availability
+      wait_for:
+        host: "{{ inventory_hostname }}"
+        port: "{{ default_netconf_port }}"
+        timeout: "{{ connection_timeout }}"
+        state: started
+      register: netconf_port_check
+      ignore_errors: yes
+      delegate_to: localhost
+      
+    - name: Set port 22 as fallback if 830 is not available
+      set_fact:
+        ansible_netconf_port: "{{ default_ssh_port if netconf_port_check.failed else default_netconf_port }}"
+      
+    - name: Update connection status
+      set_fact:
+        device_status: >-
+          {{ device_status | combine({
+               inventory_hostname: device_status[inventory_hostname] | combine({
+                 'netconf_port': ansible_netconf_port | int,
+                 'connection_status': true,
+                 'connection_msg': 'Using NETCONF over ' + 
+                   ('SSH (port 22)' if ansible_netconf_port == default_ssh_port else 'port 830')
+               })
+             }) }}
+        
+    - name: Get VLAN information
+      block:
+        - name: Get configured VLANs
+          junos_command:
+            commands:
+              - show configuration vlans
+            display: text
+          register: vlan_output
+          
+      rescue:
+        - name: Record command failure
+          set_fact:
+            device_status: >-
+              {{ device_status | combine({
+                   inventory_hostname: device_status[inventory_hostname] | combine({
+                     'command_error': true,
+                     'error_msg': vlan_output.msg if vlan_output is defined else 'Command execution failed'
+                   })
+                 }) }}
+      
+    - name: Create CSV file header
+      copy:
+        content: "{{ csv_header }}"
+        dest: "{{ csv_file }}"
+        force: yes
+      delegate_to: localhost
+      run_once: true
+      
+    - name: Process VLAN information
+      include_tasks: tasks/process_vlan.yml
+      vars:
+        vlan_configs: "{{ (vlan_output.stdout[0] | default('')) | 
+                         regex_findall('(inactive: )?([\\w.-]+) {([^}]+)}') }}"
+      when: 
+        - vlan_output is defined
+        - vlan_output is success
+        - vlan_output.stdout is defined
+      
+  post_tasks:
+    - name: Generate error report
+      template:
+        src: templates/error_report.j2
+        dest: "{{ error_file }}"
+      delegate_to: localhost
+      run_once: true
+      
+    - name: Show execution summary
+      debug:
+        msg: |
+          Playbook execution summary:
+          - Total devices: {{ play_hosts | length }}
+          - Connected devices: {{ device_status | dict2items | selectattr('value.connection_status', 'true') | list | length }}
+          - Failed devices: {{ device_status | dict2items | selectattr('value.command_error', 'defined') | list | length }}
+          - Output files:
+            - CSV: {{ csv_file }}
+            - Error report: {{ error_file }}

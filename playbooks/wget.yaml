@@ -22,6 +22,8 @@
         url: "{{ url }}"
         dest: "{{ dir }}"
       register: return_value
+      vars:
+        ansible_debug: yes
 
     - name: Print result
       debug:

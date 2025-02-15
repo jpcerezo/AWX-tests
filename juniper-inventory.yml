@@ -1,0 +1,26 @@
+all:
+  children:
+    juniper:
+      children:
+        juniper_routers:
+          hosts:
+            ictn01-fra:
+              ansible_host: 192.168.1.190
+              device_type: vSRX
+            ictn01-tip:
+              ansible_host: 192.168.1.192
+              device_type: vSRX
+            ictn02-fra:
+              ansible_host: 192.168.1.191
+              device_type: vSRX
+            ictn02-tip:
+              ansible_host: 192.168.1.193
+              device_type: vSRX
+            srx3:
+              ansible_host: 192.168.1.175
+              device_type: SRX300
+        juniper_switches:
+          hosts:
+            ex3:
+              ansible_host: 192.168.1.176
+              device_type: ex2300

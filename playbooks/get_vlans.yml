@@ -1,0 +1,53 @@
+---
+- name: Retrieve VLAN configurations from Juniper devices
+  hosts: juniper
+  gather_facts: no
+  connection: local
+
+  vars:
+    ansible_network_os: junos
+    ansible_connection: netconf
+    provider:
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      transport: netconf
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+
+  tasks:
+    - name: Get VLAN information from switches
+      junos_command:
+        commands:
+          - show vlans
+        display: json
+      register: vlan_output
+      when: "'juniper_switches' in group_names"
+      ignore_errors: yes
+
+    - name: Get VLAN information from routers
+      junos_command:
+        commands:
+          - show vlans
+        display: json
+      register: vlan_output_routers
+      when: "'juniper_routers' in group_names"
+      ignore_errors: yes
+
+    - name: Display VLAN information for switches
+      debug:
+        var: vlan_output
+      when: 
+        - "'juniper_switches' in group_names"
+        - vlan_output.stdout is defined
+
+    - name: Display VLAN information for routers
+      debug:
+        var: vlan_output_routers
+      when:
+        - "'juniper_routers' in group_names"
+        - vlan_output_routers.stdout is defined
+
+    - name: Save VLAN information to file
+      copy:
+        content: "{{ (vlan_output if 'juniper_switches' in group_names else vlan_output_routers) | to_nice_json }}"
+        dest: "./vlan_config_{{ inventory_hostname }}.json"
+      delegate_to: localhost

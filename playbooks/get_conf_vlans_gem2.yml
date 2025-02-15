@@ -1,0 +1,128 @@
+---
+# VLAN Configuration Retrieval Playbook
+# Author: Claude (Revised)
+# Last modified: 2025-02-12
+
+- name: Retrieve VLAN configurations from Juniper devices
+  hosts: "{{ var_hosts }}"
+  gather_facts: no
+  vars:
+    default_netconf_port: 830
+    default_ssh_port: 22
+    connection_timeout: 10  # Timeout for initial connection attempt
+    command_timeout: 30    # Timeout for command execution
+    output_dir: "./output"
+    timestamp: "{{ lookup('pipe', 'date +%Y%m%d_%H%M%S') }}"
+    csv_file: "{{ output_dir }}/vlans_inventory.csv"  # Removed timestamp from filename
+    error_file: "{{ output_dir }}/vlans_inventory_{{ timestamp }}.errors" #keep it to avoid overwritting errors.
+    csv_header: "hostname,vlan_name,vlan_id,description,l3_interface,status\n"
+
+  pre_tasks:
+    - name: Create output directory
+      file:
+        path: "{{ output_dir }}"
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+      run_once: true
+
+    - name: Initialize device status
+      set_fact:
+        device_status: {}
+
+    - name: Check if CSV file exists
+      stat:
+        path: "{{ csv_file }}"
+      register: csv_file_check
+      delegate_to: localhost
+      run_once: true
+
+    - name: Create CSV file header (if file doesn't exist)
+      copy:
+        content: "{{ csv_header }}"
+        dest: "{{ csv_file }}"
+      delegate_to: localhost
+      run_once: true
+      when: not csv_file_check.stat.exists  # Only create if file doesn't exist
+
+  tasks:
+    - name: Check port availability and set connection
+      block:
+        - name: Try NETCONF connection (port 830)
+          ansible.netcommon.netconf_get:
+            source: running
+          register: netconf_result
+          vars:
+            ansible_connection: netconf
+            ansible_network_os: junipernetworks.junos.junos
+            ansible_netconf_port: "{{ default_netconf_port }}"
+            ansible_timeout: "{{ connection_timeout }}"
+            ansible_command_timeout: "{{ command_timeout }}"
+
+        - name: Update device status (NETCONF Success)
+          set_fact:
+            device_status: "{{ device_status | combine({inventory_hostname: {'connection_status': 'connected', 'connection_type': 'netconf', 'port': default_netconf_port, 'error': ''}}) }}"
+
+      rescue:
+        - name: Fallback to SSH (port 22)
+          debug:
+            msg: "NETCONF connection failed, falling back to SSH on port 22 for {{ inventory_hostname }}"
+
+        - name: Try SSH connection (port 22)
+          junos_command:
+            commands:
+              - show configuration vlans | display set
+            display: text
+          register: vlan_output
+          vars:
+            ansible_connection: network_cli
+            ansible_network_os: junipernetworks.junos.junos
+            ansible_port: "{{ default_ssh_port }}"
+            ansible_timeout: "{{ connection_timeout }}"
+            ansible_command_timeout: "{{ command_timeout }}"
+          ignore_errors: yes
+
+        - name: Update device status (SSH Success or Failure)
+          set_fact:
+            device_status: >-
+              {{ device_status | combine({inventory_hostname: {
+                'connection_status': 'connected' if vlan_output is success else 'failed',
+                'connection_type': 'ssh',
+                'port': default_ssh_port,
+                'error': vlan_output.msg | default('') if vlan_output is defined else 'Initial connection failed'
+              }}) }}
+
+    - name: Process VLAN information (NETCONF)
+      include_tasks: tasks/process_vlan_netconf.yml
+      vars:
+        vlan_configs: "{{ netconf_result.get_config.data_xml }}"
+      when:
+        - device_status[inventory_hostname].connection_type == 'netconf'
+        - device_status[inventory_hostname].connection_status == 'connected'
+
+    - name: Process VLAN information (SSH)
+      include_tasks: tasks/process_vlan_ssh.yml
+      when:
+        - device_status[inventory_hostname].connection_type == 'ssh'
+        - device_status[inventory_hostname].connection_status == 'connected'
+
+
+  post_tasks:
+    - name: Generate error report
+      template:
+        src: templates/error_report_g.j2
+        dest: "{{ error_file }}"
+      delegate_to: localhost
+      run_once: true
+
+
+    - name: Show execution summary
+      debug:
+        msg: |
+          Playbook execution summary:
+          - Total devices: {{ play_hosts | length }}
+          - Connected devices: {{ device_status | dict2items | selectattr('value.connection_status', '==', 'connected') | list | length }}
+          - Failed devices: {{ device_status | dict2items | selectattr('value.connection_status', '==', 'failed') | list | length }}
+          - Output files:
+            - CSV: {{ csv_file }}
+            - Error report: {{ error_file }}

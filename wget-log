@@ -1,0 +1,20 @@
+--2025-02-14 17:35:27--  https://cdn.juniper.net/software/junossr/21.4R3-S6/junos-arm-32-21.4R3-S6.5.tgz?SM_USER=juan.cerezo@de-cix.net
+Resolving cdn.juniper.net (cdn.juniper.net)... 23.215.20.128
+Connecting to cdn.juniper.net (cdn.juniper.net)|23.215.20.128|:443... connected.
+HTTP request sent, awaiting response... 302 Moved Temporarily
+Location: https://www.juniper.net/us/en/error/support/403.page [following]
+--2025-02-14 17:35:27--  https://www.juniper.net/us/en/error/support/403.page
+Resolving www.juniper.net (www.juniper.net)... 151.101.131.10, 151.101.3.10, 151.101.67.10, ...
+Connecting to www.juniper.net (www.juniper.net)|151.101.131.10|:443... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://www.juniper.net/us/en/errors/support-403.html [following]
+--2025-02-14 17:35:28--  https://www.juniper.net/us/en/errors/support-403.html
+Reusing existing connection to www.juniper.net:443.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [text/html]
+Saving to: ‘junos-arm-32-21.4R3-S6.5.tgz?SM_USER=juan.cerezo@de-cix.net’
+
+                   junos-arm-32-21.4R3     [<=>                                                                        ]       0  --.-KB/s                                 junos-arm-32-21.4R3-     [ <=>                                                                       ] 179.39K   200KB/s               junos-arm-32-21.4R3-S6.5.tgz?SM_USER=j     [  <=>                                                                      ] 669.76K   682KB/s    in 1.0s    
+
+2025-02-14 17:35:30 (682 KB/s) - ‘junos-arm-32-21.4R3-S6.5.tgz?SM_USER=juan.cerezo@de-cix.net’ saved [685835]
+

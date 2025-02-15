@@ -1,0 +1,36 @@
+---
+- name: Retrieve VLAN configurations from Juniper devices
+  hosts: juniper
+  gather_facts: no
+  connection: local
+
+  vars:
+    ansible_network_os: junos
+    ansible_connection: netconf
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+    csv_header: "hostname,vlan_name,vlan_id,description\n"
+
+  tasks:
+    - name: Get configured VLAN information
+      junos_command:
+        commands:
+          - 'show configuration vlans'
+      register: vlan_output
+      ignore_errors: yes
+
+    - name: Create CSV file header
+      copy:
+        content: "{{ csv_header }}"
+        dest: "./vlans_inventory.csv"
+      delegate_to: localhost
+      run_once: true
+
+    - name: Parse and add VLAN information to CSV
+      lineinfile:
+        path: "./vlans_inventory.csv"
+        line: "{{ inventory_hostname }},{{ item[0] }},{{ item[2] }},{{ item[1] | default('') }}"
+      delegate_to: localhost
+      vars:
+        vlan_data: "{{ vlan_output.stdout[0] | regex_findall('([\\w.-]+)\\s+{[^}]*description\\s+\"([^\"]+)\"[^}]*vlan-id\\s+(\\d+)|([\\w.-]+)\\s+{[^}]*vlan-id\\s+(\\d+)') }}"
+      loop: "{{ vlan_data }}"
+      when: vlan_output.stdout is defined
