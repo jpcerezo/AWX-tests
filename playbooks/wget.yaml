@@ -3,11 +3,16 @@
   hosts: localhost
   gather_facts: no
   become_method: sudo
-#  become: true
   vars:
     url: "{{ var_url }}"
     dir: "{{ var_dir }}"
   tasks:
+    - name: Debug variables
+      debug:
+        msg: 
+          - "URL: {{ url }}"
+          - "Directory: {{ dir }}"
+
     - name: "get the stats of the {{ var_dir }} directory"
       stat:
         path: "{{ var_dir }}"
@@ -21,6 +26,10 @@
       get_url:
         url: "{{ url }}"
         dest: "{{ dir }}"
+        timeout: 30  # Increased timeout
+        validate_certs: yes
+        mode: '0755'  # Add explicit permissions
+        force: yes    # Force download even if file exists
       register: return_value
       vars:
         ansible_debug: yes
@@ -28,3 +37,4 @@
     - name: Print result
       debug:
         var: return_value
+        verbosity: 0
