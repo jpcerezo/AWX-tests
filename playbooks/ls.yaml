@@ -1,34 +1,41 @@
 ---
-- name: Print all files in the directory
+- name: Investigate file access
   hosts: localhost
   gather_facts: no
   vars:
     path: "/mnt/awx/data"
   tasks:
-    - name: Get current user info
-      command: id
-      register: user_info
-      
-    - name: Debug user info
-      debug:
-        var: user_info.stdout
+    - name: Get mount info
+      command: mount
+      register: mount_info
 
-    - name: Check directory permissions
-      command: ls -la "{{ path }}"
+    - name: Show mount info
+      debug:
+        msg: "{{ mount_info.stdout_lines | select('search', '/mnt/awx/data') | list }}"
+
+    - name: Get directory info with ls
+      command: ls -la /mnt/awx/data
       register: ls_output
+
+    - name: Show ls output
+      debug:
+        var: ls_output.stdout_lines
+
+    - name: Get directory owner details
+      command: stat /mnt/awx/data
+      register: stat_output
+
+    - name: Show stat output
+      debug:
+        var: stat_output.stdout_lines
+
+    - name: Test file creation
+      copy:
+        content: "test content"
+        dest: "{{ path }}/test_from_ee.txt"
+      register: file_creation
       ignore_errors: yes
 
-    - name: Debug directory permissions
+    - name: Show file creation result
       debug:
-        var: ls_output
-
-    - name: Find all files
-      find:
-        paths: "{{ path }}"
-        recurse: no
-        file_type: file
-      register: found_files
-
-    - name: Show found files
-      debug:
-        var: found_files
+        var: file_creation
