@@ -1,0 +1,20 @@
+---
+- name: List files using shell
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Show current user
+      shell: "id"
+      register: user_output
+
+    - name: Debug user
+      debug:
+        var: user_output.stdout
+
+    - name: List files with ls
+      shell: "ls -la /mnt/awx/data"
+      register: ls_output
+
+    - name: Debug ls
+      debug:
+        var: ls_output.stdout_lines
