@@ -3,45 +3,41 @@
   hosts: localhost
   gather_facts: no
   vars:
-    path: "/mnt/awx/data"    # Set default path or use var_path from extra vars
+    path: "/mnt/awx/data"
   tasks:
-    - name: Debug path variable
+    - name: Get current user info
+      command: id
+      register: user_info
+      
+    - name: Debug user info
       debug:
-        msg: "Checking path: {{ path }}"
+        var: user_info.stdout
+
+    - name: Check directory existence with ls
+      command: ls -la "{{ path }}"
+      register: ls_output
+      ignore_errors: yes
+
+    - name: Debug ls output
+      debug:
+        var: ls_output
 
     - name: Ensure directory exists
       file:
         path: "{{ path }}"
         state: directory
         mode: '0755'
+        owner: awx
+        group: root
       become: yes
       
-    - name: "Check if the {{ path }} directory exists"
-      stat:
-        path: "{{ path }}"
-      register: directory_info
-      
-    - name: Debug directory info
-      debug:
-        var: directory_info
-        
-    - name: "Find all files in {{ path }}"
+    - name: Find all files
       find:
         paths: "{{ path }}"
         recurse: no
         file_type: file
-      when: directory_info.stat.exists
       register: found_files
-      
-    - name: Print the name and size of each file
+
+    - name: Show found files
       debug:
-        msg: "File: {{ item.path }} - Size: {{ item.size }} bytes"
-      loop: "{{ found_files.files | default([]) }}"
-      when: directory_info.stat.exists
-      loop_control:
-        label: "{{ item['path'] }}"
-        
-    - name: Fail if the directory does not exist
-      fail:
-        msg: "Directory {{ path }} does not exist."
-      when: not directory_info.stat.exists
+        var: found_files
