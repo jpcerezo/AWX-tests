@@ -1,23 +1,30 @@
 ---
-- name: Print all files in the /data/custom-awx-pv directory
+- name: Print all files in the directory
   hosts: localhost
   gather_facts: no
   vars:
-    path: "{{ var_path }}"
-
+    path: "/mnt/awx/data"    # Set default path or use var_path from extra vars
   tasks:
+    - name: Debug path variable
+      debug:
+        msg: "Checking path: {{ path }}"
+
     - name: Ensure directory exists
       file:
         path: "{{ path }}"
         state: directory
         mode: '0755'
       become: yes
-
+      
     - name: "Check if the {{ path }} directory exists"
       stat:
         path: "{{ path }}"
       register: directory_info
-
+      
+    - name: Debug directory info
+      debug:
+        var: directory_info
+        
     - name: "Find all files in {{ path }}"
       find:
         paths: "{{ path }}"
@@ -25,16 +32,16 @@
         file_type: file
       when: directory_info.stat.exists
       register: found_files
-
+      
     - name: Print the name and size of each file
       debug:
         msg: "File: {{ item.path }} - Size: {{ item.size }} bytes"
-      loop: "{{ found_files.files }}"
+      loop: "{{ found_files.files | default([]) }}"
       when: directory_info.stat.exists
       loop_control:
         label: "{{ item['path'] }}"
-
+        
     - name: Fail if the directory does not exist
       fail:
         msg: "Directory {{ path }} does not exist."
-      when: not directory_info.stat.exists      
+      when: not directory_info.stat.exists
