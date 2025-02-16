@@ -6,6 +6,13 @@
     path: "{{ var_path }}"
 
   tasks:
+    - name: Ensure directory exists
+      file:
+        path: "{{ path }}"
+        state: directory
+        mode: '0755'
+      become: yes
+
     - name: "Check if the {{ path }} directory exists"
       stat:
         path: "{{ path }}"
@@ -30,4 +37,4 @@
     - name: Fail if the directory does not exist
       fail:
         msg: "Directory {{ path }} does not exist."
-      when: not directory_info.stat.exists          
+      when: not directory_info.stat.exists      

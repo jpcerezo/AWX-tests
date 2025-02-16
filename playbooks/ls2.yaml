@@ -1,0 +1,48 @@
+---
+- name: Print all files in the /mnt/awx/data directory
+  hosts: localhost
+  gather_facts: no
+  vars:
+    path: "/mnt/awx/data"
+  tasks:
+    - name: Debug directory information
+      block:
+        - name: Check directory existence
+          stat:
+            path: "{{ path }}"
+          register: directory_info
+
+        - name: Debug directory stat
+          debug:
+            var: directory_info
+
+        - name: List directory contents
+          ansible.builtin.command: ls -la "{{ path }}"
+          register: dir_contents
+          changed_when: false
+          ignore_errors: yes
+
+        - name: Print directory contents
+          debug:
+            var: dir_contents
+
+        - name: "Find all files in {{ path }}"
+          find:
+            paths: "{{ path }}"
+            recurse: no
+            file_type: file
+          when: directory_info.stat.exists
+          register: found_files
+
+        - name: Print found files
+          debug:
+            msg: "File: {{ item.path }} - Size: {{ item.size }} bytes"
+          loop: "{{ found_files.files | default([]) }}"
+          loop_control:
+            label: "{{ item['path'] }}"
+          when: found_files.files is defined
+
+    - name: Fail if the directory does not exist
+      fail:
+        msg: "Directory {{ path }} does not exist."
+      when: not directory_info.stat.exists
