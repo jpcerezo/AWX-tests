@@ -1,31 +1,51 @@
 ---
-- name: Test file access with detailed error reporting
+- name: List files in AWX data directory
   hosts: localhost
   gather_facts: no
+  vars:
+    data_path: /mnt/awx/data
   tasks:
-    - name: Debug mount points
-      shell: "mount | grep '/mnt/awx/data'"
-      register: mount_output
+    - name: Show network configuration
+      shell: |
+        ip route get 10.0.0.220
+        echo "---"
+        ip route get 192.168.1.40
+      register: network_info
       ignore_errors: yes
 
-    - name: Show mount info
+    - name: Display network info
       debug:
-        var: mount_output
+        var: network_info.stdout_lines
 
-    - name: Debug directory permissions
-      shell: "ls -ld /mnt/awx/data 2>&1 || true"
-      register: dir_perms
-      ignore_errors: yes
+    - name: Check directory existence and permissions
+      stat:
+        path: "{{ data_path }}"
+      register: dir_info
 
-    - name: Show directory permissions
+    - name: Show directory info
       debug:
-        var: dir_perms
+        var: dir_info
 
-    - name: Try to list files
-      shell: "ls -la /mnt/awx/data 2>&1 || true"
+    - name: List directory contents with ls
+      shell: "ls -la {{ data_path }}"
       register: ls_output
+      when: dir_info.stat.exists
       ignore_errors: yes
 
     - name: Show ls output
       debug:
-        var: ls_output
+        var: ls_output.stdout_lines
+      when: ls_output is defined
+
+    - name: Test file creation
+      copy:
+        content: "test content"
+        dest: "{{ data_path }}/test_file.txt"
+      when: dir_info.stat.exists
+      register: file_test
+      ignore_errors: yes
+
+    - name: Show file creation result
+      debug:
+        var: file_test
+      when: file_test is defined
