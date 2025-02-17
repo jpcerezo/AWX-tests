@@ -1,20 +1,31 @@
 ---
-- name: List files using shell
+- name: Test file access with detailed error reporting
   hosts: localhost
   gather_facts: no
   tasks:
-    - name: Show current user
-      shell: "id"
-      register: user_output
+    - name: Debug mount points
+      shell: "mount | grep '/mnt/awx/data'"
+      register: mount_output
+      ignore_errors: yes
 
-    - name: Debug user
+    - name: Show mount info
       debug:
-        var: user_output.stdout
+        var: mount_output
 
-    - name: List files with ls
-      shell: "ls -la /mnt/awx/data"
+    - name: Debug directory permissions
+      shell: "ls -ld /mnt/awx/data 2>&1 || true"
+      register: dir_perms
+      ignore_errors: yes
+
+    - name: Show directory permissions
+      debug:
+        var: dir_perms
+
+    - name: Try to list files
+      shell: "ls -la /mnt/awx/data 2>&1 || true"
       register: ls_output
+      ignore_errors: yes
 
-    - name: Debug ls
+    - name: Show ls output
       debug:
-        var: ls_output.stdout_lines
+        var: ls_output
