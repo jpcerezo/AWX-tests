@@ -1,35 +1,32 @@
 ---
-- name: Junos Gather facts 
-  hosts:  vSRX
+- name: Junos Gather facts
+  hosts: vSRX
   gather_facts: no
 
   collections:
     - junipernetworks.junos
 
   vars:
-    ansible_network_os: junipernetworks.junos.junos
+    ansible_connection: netconf
+    ansible_network_os: junos
 
   tasks:
     - name: Time Zone
-      connection: ansible.netcommon.netconf
       junipernetworks.junos.junos_config:
         lines:
-        - set system time-zone Europe/Madrid
+          - set system time-zone Europe/Madrid
       tags: ntp
-      
+
     - name: TEST 2 - Execute three commands.
-      juniper.device.command:
+      junipernetworks.junos.junos_command:
         commands:
           - "show version"
           - "show system uptime"
-          - "show interface terse"
+          - "show interfaces terse"
       register: test2
-      tags: commands      
+      tags: commands
 
-#    - name: gather juniper junos facts
-#      vars:
-#        ansible_connection: netconf
-#      junipernetworks.junos.facts:
-#        gather_network_resources: "{{ network_resource | default('!vlans,!bgp_global,!bgp_address_family,!ospf_interfaces') }}"
-#      tags: resources
-  
+    - name: gather juniper junos facts
+      junipernetworks.junos.junos_facts:
+        gather_network_resources: "{{ network_resource | default('!vlans,!bgp_global,!bgp_address_family,!ospf_interfaces') }}"
+      tags: resources

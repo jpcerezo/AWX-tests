@@ -1,142 +1,143 @@
 ---
-- name: Test juniper.device.command module
+- name: Test junipernetworks.junos.junos_command module
   hosts: all
   gather_facts: false
+  
+  vars:
+    ansible_connection: network_cli
+    ansible_network_os: junos
 
   tasks:
     - name: TEST 1 - Execute single "show version" command.
-      juniper.device.command:
+      junipernetworks.junos.junos_command:
         commands: "show version"
       register: test1
 
     - name: Check TEST 1
       ansible.builtin.assert:
         that:
-          test1.msg == "The command executed successfully."
+          - test1.stdout is defined
+          - test1.stdout | length > 0
 
     - name: Creates directory
       ansible.builtin.file:
         path: out
         state: directory
-        mode: '0644'
+        mode: '0755'
+      delegate_to: localhost
 
     - name: TEST 2 - Execute three commands.
-      juniper.device.command:
+      junipernetworks.junos.junos_command:
         commands:
           - "show version"
           - "show system uptime"
-          - "show interface terse"
+          - "show interfaces terse"
       register: test2
 
     - name: Check TEST 2
       ansible.builtin.assert:
         that:
-          - test2.results[0].command == "show version"
-          - test2.results[0].msg == "The command executed successfully."
-          - test2.results[1].command == "show system uptime"
-          - test2.results[1].msg == "The command executed successfully."
-          - test2.results[2].command == "show interface terse"
-          - test2.results[2].msg == "The command executed successfully."
+          - test2.stdout is defined
+          - test2.stdout | length == 3
 
     - name: Print the command output of each.
       ansible.builtin.debug:
-        var: item.stdout
-      with_items: "{{ test2.results }}"
+        var: item
+      loop: "{{ test2.stdout }}"
 
     - name: TEST 3 - Two commands with XML output.
-      juniper.device.command:
+      junipernetworks.junos.junos_command:
         commands:
           - "show route"
           - "show version"
-        format: xml
+        display: xml
       register: test3
 
     - name: Check TEST 3
       ansible.builtin.assert:
         that:
-          - test3.results[0].command == "show route"
-          - test3.results[0].msg == "The command executed successfully."
-          - test3.results[1].command == "show version"
-          - test3.results[1].msg == "The command executed successfully."
+          - test3.stdout is defined
+          - test3.stdout | length == 2
 
-    - name: TEST 4 - show route with XML output - show version with JSON output
-      juniper.device.command:
+    - name: TEST 4 - Multiple commands (JSON not directly supported, using text)
+      junipernetworks.junos.junos_command:
         commands:
           - "show route"
           - "show version"
-        formats:
-          - "xml"
-          - "json"
       register: test4
 
     - name: Check TEST 4
       ansible.builtin.assert:
         that:
-          - test4.results[0].command == "show route"
-          - test4.results[0].msg == "The command executed successfully."
-          - test4.results[1].command == "show version"
-          - test4.results[1].msg == "The command executed successfully."
+          - test4.stdout is defined
+          - test4.stdout | length == 2
 
-    - name: TEST 5 - save outputs in dest_dir
-      juniper.device.command:
-        commands:
-          - "show route"
-          - "show version"
-        dest_dir: "./out"
-      register: test5
+    - name: TEST 5 - Save outputs to files
+      ansible.builtin.copy:
+        content: "{{ item.1 }}"
+        dest: "./out/{{ inventory_hostname }}_command_{{ item.0 }}.txt"
+      loop: "{{ test4.stdout | enumerate }}"
+      delegate_to: localhost
 
-    - name: Check TEST 5
-      ansible.builtin.assert:
-        that:
-          - test5.results[0].command == "show route"
-          - test5.results[0].msg == "The command executed successfully."
-          - test5.results[1].command == "show version"
-          - test5.results[1].msg == "The command executed successfully."
-
-    - name: TEST 6 - save output to dest
-      juniper.device.command:
-        command: "show system uptime"
-        dest: "./out/{{ inventory_hostname }}.uptime.output"
+    - name: TEST 6 - Single command with output save
+      junipernetworks.junos.junos_command:
+        commands: "show system uptime"
       register: test6
+
+    - name: Save TEST 6 output
+      ansible.builtin.copy:
+        content: "{{ test6.stdout[0] }}"
+        dest: "./out/{{ inventory_hostname }}.uptime.output"
+      delegate_to: localhost
 
     - name: Check TEST 6
       ansible.builtin.assert:
         that:
-          - test6.command == "show system uptime"
-          - test6.msg == "The command executed successfully."
+          - test6.stdout is defined
+          - test6.stdout | length == 1
 
-    - name: TEST 7 - save output to dest
-      juniper.device.command:
-        command:
+    - name: TEST 7 - Multiple commands with combined output
+      junipernetworks.junos.junos_command:
+        commands:
           - "show route"
           - "show version"
-        dest: "./out/{{ inventory_hostname }}.commands.output"
       register: test7
+
+    - name: Save TEST 7 combined output
+      ansible.builtin.copy:
+        content: |
+          Command: show route
+          {{ test7.stdout[0] }}
+          
+          Command: show version
+          {{ test7.stdout[1] }}
+        dest: "./out/{{ inventory_hostname }}.commands.output"
+      delegate_to: localhost
 
     - name: Check TEST 7
       ansible.builtin.assert:
         that:
-          - test7.results[0].command == "show route"
-          - test7.results[0].msg == "The command executed successfully."
-          - test7.results[1].command == "show version"
-          - test7.results[1].msg == "The command executed successfully."
+          - test7.stdout is defined
+          - test7.stdout | length == 2
 
-    - name: TEST 8 - Multiple commands, save outputs, but don't return them
-      juniper.device.command:
+    - name: TEST 8 - Multiple commands with XML format
+      junipernetworks.junos.junos_command:
         commands:
           - "show route"
           - "show version"
-        formats:
-          - "xml"
-          - "json"
-        dest_dir: "./out/"
-        return_output: false
+        display: xml
       register: test8
+
+    - name: Save TEST 8 outputs without returning (save only)
+      ansible.builtin.copy:
+        content: "{{ item.1 }}"
+        dest: "./out/{{ inventory_hostname }}_xml_{{ item.0 }}.xml"
+      loop: "{{ test8.stdout | enumerate }}"
+      delegate_to: localhost
+      when: test8.stdout is defined
 
     - name: Check TEST 8
       ansible.builtin.assert:
         that:
-          - test8.results[0].command == "show route"
-          - test8.results[0].msg == "The command executed successfully."
-          - test8.results[1].command == "show version"
-          - test8.results[1].msg == "The command executed successfully."
+          - test8.stdout is defined
+          - test8.stdout | length == 2

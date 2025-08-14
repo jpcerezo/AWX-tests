@@ -1,5 +1,6 @@
 ---
 collections:
   - name: netbox.netbox
-  - name: juniper.device 
+  - name: junipernetworks.junos
+    version: ">=5.0.0"
   - name: community.general
